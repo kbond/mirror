@@ -27,6 +27,17 @@ abstract class ClassReflectorIterator extends RecursiveClassIterator
 
     private int $flags = 0;
 
+    final public function has(string $name): bool
+    {
+        foreach ($this->classes() as $class) {
+            if ($this->hasForClass($class, $name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @return T
      */
@@ -97,4 +108,9 @@ abstract class ClassReflectorIterator extends RecursiveClassIterator
      * @return T
      */
     abstract protected function oneForClass(\ReflectionClass $class, string $name): object;
+
+    /**
+     * @param \ReflectionClass<object> $class
+     */
+    abstract protected function hasForClass(\ReflectionClass $class, string $name): bool;
 }

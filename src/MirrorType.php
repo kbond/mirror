@@ -16,11 +16,38 @@ namespace Zenstruck;
  */
 final class MirrorType
 {
+    /**
+     * Allow exact type (always enabled).
+     */
+    public const EXACT = 0;
+
+    /**
+     * If type is class, parent classes are supported.
+     */
+    public const COVARIANCE = 2;
+
+    /**
+     * If type is class, child classes are supported.
+     */
+    public const CONTRAVARIANCE = 4;
+
+    /**
+     * If type is string, do not support other scalar types. Follows
+     * same logic as "declare(strict_types=1)".
+     */
+    public const STRICT = 8;
+
+    /**
+     * If type is float, do not support int (implies {@see STRICT).
+     */
+    public const VERY_STRICT = 16;
+
     private const TYPE_NORMALIZE_MAP = [
         'boolean' => 'bool',
         'integer' => 'int',
         'double' => 'float',
         'resource (closed)' => 'resource',
+        'NULL' => 'null',
     ];
     private const ALLOWED_TYPE_MAP = [
         'string' => ['bool', 'int', 'float'],
@@ -114,7 +141,10 @@ final class MirrorType
         return $this->reflector instanceof \ReflectionType;
     }
 
-    public function supports(string $type, bool $strict = false): bool
+    /**
+     * @param int-mask<self::EXACT,self::COVARIANCE,self::CONTRAVARIANCE,self::STRICT,self::VERY_STRICT> $mode
+     */
+    public function supports(string $type, int $mode = self::EXACT | self::COVARIANCE): bool
     {
         if (!$this->reflector) {
             // no type-hint so any type is supported
@@ -126,7 +156,7 @@ final class MirrorType
                 $subType = clone $this;
                 $subType->reflector = $refType;
 
-                if (!$subType->supports($type, $strict)) {
+                if (!$subType->supports($type, $mode)) {
                     return false;
                 }
             }
@@ -142,9 +172,16 @@ final class MirrorType
                 return true;
             }
 
-            if (\is_a($type, $supportedType, true)) {
-                // object type
+            if ($mode & self::COVARIANCE && \is_a($type, $supportedType, true)) {
                 return true;
+            }
+
+            if ($mode & self::CONTRAVARIANCE && \is_a($supportedType, $type, true)) {
+                return true;
+            }
+
+            if ($mode & self::VERY_STRICT) {
+                continue;
             }
 
             if ('float' === $supportedType && 'int' === $type) {
@@ -152,7 +189,7 @@ final class MirrorType
                 return true;
             }
 
-            if ($strict) {
+            if ($mode & self::STRICT) {
                 continue;
             }
 
@@ -177,7 +214,7 @@ final class MirrorType
 
         $type = \get_debug_type($value);
 
-        if (!$this->supports($type, $strict)) {
+        if (!$this->supports($type, $strict ? self::EXACT | self::COVARIANCE | self::STRICT : self::EXACT | self::COVARIANCE)) {
             return false;
         }
 

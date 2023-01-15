@@ -85,4 +85,17 @@ final class MirrorParameter implements Mirror
     {
         return new MirrorType($this->reflector->getType(), $this->reflector->getDeclaringClass()?->name);
     }
+
+    /**
+     * @param int-mask<MirrorType::EXACT,MirrorType::COVARIANCE,MirrorType::CONTRAVARIANCE,MirrorType::STRICT,MirrorType::VERY_STRICT> $mode
+     */
+    public function supports(string $type, int $mode = MirrorType::EXACT | MirrorType::COVARIANCE): bool
+    {
+        return $this->type()->supports($type, $mode);
+    }
+
+    public function accepts(mixed $value, bool $strict = false): bool
+    {
+        return $this->type()->accepts($value, $strict);
+    }
 }

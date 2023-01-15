@@ -12,15 +12,14 @@
 namespace Zenstruck\Mirror\Internal;
 
 use Zenstruck\Mirror;
-use Zenstruck\Mirror\Iterator;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  *
  * @template T of Mirror
- * @extends Iterator<T>
+ * @extends MirrorIterator<T>
  */
-abstract class RecursiveClassIterator extends Iterator
+abstract class RecursiveClassIterator extends MirrorIterator
 {
     private bool $recursive = false;
     private bool $includeDuplicates = false;
@@ -51,14 +50,6 @@ abstract class RecursiveClassIterator extends Iterator
         $clone->includeDuplicates = true;
 
         return $clone;
-    }
-
-    /**
-     * @return string[]
-     */
-    final public function names(): array
-    {
-        return \array_map(static fn(Mirror $p) => $p->name(), $this->all());
     }
 
     final public function getIterator(): \Traversable

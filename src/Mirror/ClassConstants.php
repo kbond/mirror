@@ -47,6 +47,11 @@ final class ClassConstants extends ClassReflectorIterator
         return new MirrorClassConstant($class->getConstant($name));
     }
 
+    protected function hasForClass(\ReflectionClass $class, string $name): bool
+    {
+        return $class->hasConstant($name);
+    }
+
     /**
      * @return MirrorClassConstant<object>[]
      */

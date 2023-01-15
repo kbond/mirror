@@ -13,8 +13,6 @@ namespace Zenstruck;
 
 use Zenstruck\Mirror\Argument;
 use Zenstruck\Mirror\Internal\MirrorObjectMethods;
-use Zenstruck\Mirror\Iterator;
-use Zenstruck\Mirror\Traits;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -145,44 +143,6 @@ final class MirrorClass implements Mirror
         }
 
         return $object;
-    }
-
-    /**
-     * @return self<object>
-     */
-    public function parent(): ?self
-    {
-        $parent = $this->reflector->getParentClass();
-
-        return $parent ? new self($parent) : null;
-    }
-
-    /**
-     * @return Iterator<self<object>>|self<object>[]
-     */
-    public function parents(): Iterator
-    {
-        return new Iterator(function() {
-            while ($parent = $this->parent()) {
-                yield $parent;
-            }
-        });
-    }
-
-    /**
-     * @return Iterator<self<object>>|self<object>[]
-     */
-    public function interfaces(): Iterator
-    {
-        return new Iterator(\array_map(static fn(\ReflectionClass $c) => new self($c), $this->reflector->getInterfaces()));
-    }
-
-    /**
-     * @return Traits|self<object>[]
-     */
-    public function traits(): Traits
-    {
-        return new Traits($this->reflector);
     }
 
     public function get(string $property): mixed

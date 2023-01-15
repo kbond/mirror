@@ -67,6 +67,11 @@ final class Methods extends ClassReflectorIterator
         return new MirrorMethod($class->getMethod($name));
     }
 
+    protected function hasForClass(\ReflectionClass $class, string $name): bool
+    {
+        return $class->hasMethod($name);
+    }
+
     /**
      * @return MirrorMethod<object>[]
      */
