@@ -40,7 +40,6 @@ abstract class MirrorCallable implements Mirror, \Countable
         return "(function) {$this->reflector->name}()";
     }
 
-
     final public static function closureFrom(callable $callable): \Closure
     {
         return $callable instanceof \Closure ? $callable : \Closure::fromCallable($callable);

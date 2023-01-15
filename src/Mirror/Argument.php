@@ -11,8 +11,6 @@
 
 namespace Zenstruck\Mirror;
 
-use Zenstruck\Mirror\Argument\TypedArgument;
-use Zenstruck\Mirror\Argument\UnionArgument;
 use Zenstruck\Mirror\Argument\ValueFactory;
 use Zenstruck\Mirror\Exception\UnresolveableArgument;
 use Zenstruck\MirrorParameter;
@@ -23,36 +21,40 @@ use Zenstruck\MirrorType;
  *
  * @immutable
  */
-abstract class Argument
+final class Argument
 {
+    /** @var mixed[] */
+    private array $values;
     private bool $optional = false;
 
-    protected function __construct()
+    private function __construct(mixed ...$values)
     {
+        $v = [];
+
+        foreach ($values as $value) {
+            if (!$value instanceof self) {
+                $v[] = [$value];
+
+                continue;
+            }
+
+            $v[] = $value->values;
+        }
+
+        $this->values = \array_merge(...$v);
     }
 
-    final public static function union(self ...$arguments): UnionArgument
+    public static function new(mixed ...$values): self
     {
-        return new UnionArgument(...$arguments);
+        return new self(...$values);
     }
 
-    /**
-     * @param mixed|ValueFactory $value
-     */
-    final public static function typed(string $type, mixed $value): TypedArgument
+    public static function factory(string $type, callable $factory): self
     {
-        return new TypedArgument($type, $value);
+        return new self(new ValueFactory($type, $factory instanceof \Closure ? $factory : \Closure::fromCallable($factory)));
     }
 
-    /**
-     * @param mixed|ValueFactory $value
-     */
-    final public static function untyped(mixed $value): TypedArgument
-    {
-        return self::typed('mixed', $value);
-    }
-
-    final public function optional(): self
+    public function optional(): self
     {
         $clone = clone $this;
         $clone->optional = true;
@@ -60,7 +62,7 @@ abstract class Argument
         return $clone;
     }
 
-    final public function isOptional(): bool
+    public function isOptional(): bool
     {
         return $this->optional;
     }
@@ -68,7 +70,7 @@ abstract class Argument
     /**
      * @throws UnresolveableArgument
      */
-    final public function resolve(MirrorParameter $parameter): mixed
+    public function resolve(MirrorParameter $parameter): mixed
     {
         try {
             $value = $this->valueFor($type = $parameter->type());
@@ -80,9 +82,11 @@ abstract class Argument
             throw $e;
         }
 
-        if ($value instanceof ValueFactory) {
-            $value = $value($type);
+        if (!$value instanceof ValueFactory) {
+            return $value;
         }
+
+        $value = $value($type);
 
         if (!$type->accepts($value)) {
             throw new UnresolveableArgument(\sprintf('Unable to resolve argument for "%s". Expected "%s", got "%s".', $parameter, $type, \get_debug_type($value)));
@@ -91,12 +95,26 @@ abstract class Argument
         return $value;
     }
 
-    abstract public function type(): string;
+    private function valueFor(MirrorType $type): mixed
+    {
+        foreach ($this->values as $value) {
+            if (self::supports($type, $value)) {
+                return $value;
+            }
+        }
+
+        throw new UnresolveableArgument(); // todo
+    }
 
     /**
-     * @return mixed|ValueFactory
-     *
      * @throws UnresolveableArgument
      */
-    abstract protected function valueFor(MirrorType $type): mixed;
+    private static function supports(MirrorType $type, mixed $value): bool
+    {
+        if ($value instanceof ValueFactory) {
+            return $type->supports($value->type());
+        }
+
+        return $type->accepts($value);
+    }
 }

@@ -11,15 +11,42 @@
 
 namespace Zenstruck\Mirror\Argument;
 
+use Zenstruck\Mirror\Argument;
+use Zenstruck\MirrorFunction;
 use Zenstruck\MirrorType;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
+ *
+ * @internal
  */
 final class ValueFactory
 {
+    /** @var callable */
+    private $factory;
+
+    public function __construct(private string $type, callable $factory)
+    {
+        if ($factory instanceof self) {
+            throw new \InvalidArgumentException('Cannot nest value factories.');
+        }
+
+        $this->factory = $factory;
+    }
+
     public function __invoke(MirrorType $type): mixed
     {
-        return 'todo';
+        return MirrorFunction::for($this->factory)
+            ->invoke(Argument::new(
+                $type,
+                $type->types(),
+                (string) $type,
+            ))
+        ;
+    }
+
+    public function type(): string
+    {
+        return $this->type;
     }
 }
