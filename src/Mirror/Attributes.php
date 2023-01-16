@@ -11,6 +11,8 @@
 
 namespace Zenstruck\Mirror;
 
+use Zenstruck\Mirror\Internal\Iterator;
+
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  *
@@ -29,11 +31,6 @@ final class Attributes extends Iterator
     public function __construct(
         private \ReflectionClass|\ReflectionClassConstant|\ReflectionFunctionAbstract|\ReflectionParameter|\ReflectionProperty $reflector
     ) {
-        parent::__construct(function() { // @phpstan-ignore-line
-            foreach ($this->reflector->getAttributes($this->name, $this->flags) as $attribute) {
-                yield $this->instantiate ? $attribute->newInstance() : $attribute;
-            }
-        });
     }
 
     /**
@@ -121,5 +118,12 @@ final class Attributes extends Iterator
         }
 
         return $clone;
+    }
+
+    protected function iterator(): \Traversable
+    {
+        foreach ($this->reflector->getAttributes($this->name, $this->flags) as $attribute) {
+            yield $this->instantiate ? $attribute->newInstance() : $attribute; // @phpstan-ignore-line
+        }
     }
 }

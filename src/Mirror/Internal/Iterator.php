@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Zenstruck\Mirror;
+namespace Zenstruck\Mirror\Internal;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -19,20 +19,10 @@ namespace Zenstruck\Mirror;
  * @template T of object
  * @implements \IteratorAggregate<T>
  */
-class Iterator implements \IteratorAggregate, \Countable
+abstract class Iterator implements \IteratorAggregate, \Countable
 {
     /** @var (callable(T):bool)[] */
-    protected array $filters = [];
-    /** @var \Traversable<T>|\Closure():\Traversable<T> */
-    private \Traversable|\Closure $items;
-
-    /**
-     * @param iterable<T>|\Closure():\Traversable<T> $items
-     */
-    public function __construct(iterable|\Closure $items)
-    {
-        $this->items = \is_array($items) ? new \ArrayIterator($items) : $items;
-    }
+    private array $filters = [];
 
     /**
      * @return T|null
@@ -72,7 +62,7 @@ class Iterator implements \IteratorAggregate, \Countable
      *
      * @return V[]
      */
-    public function map(callable $fn): array
+    final public function map(callable $fn): array
     {
         return \array_map($fn, $this->all());
     }
@@ -80,9 +70,9 @@ class Iterator implements \IteratorAggregate, \Countable
     /**
      * @return \Traversable<T>|T[]
      */
-    public function getIterator(): \Traversable
+    final public function getIterator(): \Traversable
     {
-        $iterator = new \IteratorIterator($this->items instanceof \Closure ? ($this->items)() : $this->items);
+        $iterator = new \IteratorIterator($this->iterator());
 
         foreach ($this->filters as $filter) {
             $iterator = new \CallbackFilterIterator($iterator, $filter);
@@ -95,4 +85,9 @@ class Iterator implements \IteratorAggregate, \Countable
     {
         return \iterator_count($this);
     }
+
+    /**
+     * @return \Traversable<T>
+     */
+    abstract protected function iterator(): \Traversable;
 }

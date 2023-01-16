@@ -40,7 +40,10 @@ abstract class RecursiveClassIterator extends MirrorIterator
         return $clone;
     }
 
-    final public function getIterator(): \Traversable
+    /**
+     * @return \Traversable<T>
+     */
+    final protected function iterator(): \Traversable
     {
         $returned = [];
 
@@ -52,12 +55,6 @@ abstract class RecursiveClassIterator extends MirrorIterator
 
                 if (!$this->includeDuplicates) {
                     $returned[] = $mirror->name();
-                }
-
-                foreach ($this->filters as $filter) {
-                    if (!$filter($mirror)) {
-                        continue 2;
-                    }
                 }
 
                 yield $mirror;

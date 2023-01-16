@@ -23,4 +23,18 @@ use Zenstruck\MirrorClass;
  */
 final class Classes extends MirrorIterator
 {
+    /**
+     * @param iterable<MirrorClass<object>>|\Closure():MirrorClass<object> $iterator
+     */
+    public function __construct(private \Closure|iterable $iterator)
+    {
+    }
+
+    /**
+     * @return \Traversable<MirrorClass<object>>
+     */
+    protected function iterator(): \Traversable
+    {
+        yield from \is_iterable($this->iterator) ? $this->iterator : ($this->iterator)(); // @phpstan-ignore-line
+    }
 }

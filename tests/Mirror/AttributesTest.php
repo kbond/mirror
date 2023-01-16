@@ -9,23 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Zenstruck\Mirror\Internal;
+namespace Zenstruck\Tests\Mirror;
 
-use Zenstruck\Mirror;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
- *
- * @template T of Mirror
- * @extends Iterator<T>
  */
-abstract class MirrorIterator extends Iterator
+final class AttributesTest extends TestCase
 {
     /**
-     * @return string[]
+     * @test
      */
-    final public function names(): array
+    public function for_class(): void
     {
-        return \array_values($this->map(static fn(Mirror $p) => $p->name()));
+        $this->markTestIncomplete();
     }
 }

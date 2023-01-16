@@ -11,6 +11,7 @@
 
 namespace Zenstruck\Mirror;
 
+use Zenstruck\Mirror\Internal\Iterator;
 use Zenstruck\MirrorParameter;
 
 /**
@@ -22,13 +23,8 @@ use Zenstruck\MirrorParameter;
  */
 final class Parameters extends Iterator
 {
-    public function __construct(\ReflectionFunctionAbstract $function)
+    public function __construct(private \ReflectionFunctionAbstract $function)
     {
-        parent::__construct(static function() use ($function) {
-            foreach ($function->getParameters() as $parameter) {
-                yield new MirrorParameter($parameter);
-            }
-        });
     }
 
     public function get(string|int $name): ?MirrorParameter
@@ -63,5 +59,12 @@ final class Parameters extends Iterator
     public function names(): array
     {
         return \array_map(static fn(MirrorParameter $p) => $p->name(), $this->all());
+    }
+
+    protected function iterator(): \Traversable
+    {
+        foreach ($this->function->getParameters() as $parameter) {
+            yield new MirrorParameter($parameter);
+        }
     }
 }

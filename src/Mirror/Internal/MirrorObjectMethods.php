@@ -262,7 +262,7 @@ trait MirrorObjectMethods
 
     public function parents(): Classes
     {
-        return new Classes(function() {
+        return new Classes(function() { // @phpstan-ignore-line
             $class = $this;
 
             while ($class = $class->parent()) {

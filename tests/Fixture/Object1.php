@@ -14,6 +14,10 @@ namespace Zenstruck\Tests\Fixture;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
+#[Attribute1('first')]
+#[Attribute1('second')]
+#[Attribute2('third')]
+#[Attribute3('forth')]
 class Object1 implements Interface2
 {
     use Trait2;

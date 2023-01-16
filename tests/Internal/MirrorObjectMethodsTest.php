@@ -14,6 +14,7 @@ namespace Zenstruck\Tests\Internal;
 use PHPUnit\Framework\TestCase;
 use Zenstruck\MirrorClass;
 use Zenstruck\MirrorObject;
+use Zenstruck\Tests\Fixture\Attribute1;
 use Zenstruck\Tests\Fixture\Interface1;
 use Zenstruck\Tests\Fixture\Interface2;
 use Zenstruck\Tests\Fixture\Interface3;
@@ -362,6 +363,18 @@ abstract class MirrorObjectMethodsTest extends TestCase
 
         $this->assertTrue($mirror->isReadOnly());
         $this->assertFalse($mirror->isModifiable());
+    }
+
+    /**
+     * @test
+     */
+    public function attributes(): void
+    {
+        $attributes = $this->createMirrorFor(new Object1())->attributes();
+
+        $this->assertCount(4, $attributes);
+        $this->assertCount(2, $attributes->of(Attribute1::class));
+        $this->assertCount(3, $attributes->instanceOf(Attribute1::class));
     }
 
     abstract protected function createMirrorFor(object $object): MirrorClass|MirrorObject;
