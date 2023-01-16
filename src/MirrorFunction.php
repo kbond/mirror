@@ -57,4 +57,9 @@ final class MirrorFunction extends MirrorCallable
     {
         return new MirrorType($this->reflector->getReturnType(), $this->reflector->getClosureScopeClass()?->name);
     }
+
+    public function this(): ?object
+    {
+        return $this->reflector->getClosureThis();
+    }
 }

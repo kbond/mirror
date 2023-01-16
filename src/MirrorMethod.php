@@ -25,6 +25,8 @@ final class MirrorMethod extends MirrorCallable
 
     public function __construct(private \ReflectionMethod $reflector)
     {
+        $this->reflector->setAccessible(true);
+
         parent::__construct($this->reflector);
     }
 
@@ -102,5 +104,13 @@ final class MirrorMethod extends MirrorCallable
     public function isConcrete(): bool
     {
         return !$this->isAbstract();
+    }
+
+    /**
+     * @return MirrorClass<T>
+     */
+    public function class(): MirrorClass
+    {
+        return new MirrorClass($this->reflector->getDeclaringClass()); // @phpstan-ignore-line
     }
 }

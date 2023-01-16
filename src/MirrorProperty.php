@@ -58,6 +58,11 @@ final class MirrorProperty implements Mirror
         return $this->reflector->name;
     }
 
+    public function comment(): ?string
+    {
+        return $this->reflector->getDocComment() ?: null;
+    }
+
     /**
      * @return MirrorClass<T>
      */
@@ -90,9 +95,19 @@ final class MirrorProperty implements Mirror
         return !$this->isStatic();
     }
 
+    public function isPromoted(): bool
+    {
+        return $this->reflector->isPromoted();
+    }
+
     public function type(): MirrorType
     {
         return new MirrorType($this->reflector->getType(), $this->reflector->class); // @phpstan-ignore-line
+    }
+
+    public function hasType(): bool
+    {
+        return $this->reflector->hasType();
     }
 
     /**
@@ -114,5 +129,28 @@ final class MirrorProperty implements Mirror
     public function reflector(): \ReflectionProperty
     {
         return $this->reflector;
+    }
+
+    public function hasDefault(): bool
+    {
+        return $this->reflector->hasDefaultValue();
+    }
+
+    public function default(): mixed
+    {
+        return $this->reflector->getDefaultValue();
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->reflector->isDefault();
+    }
+
+    /**
+     * @param T|null $object
+     */
+    public function isInitialized(?object $object = null): bool
+    {
+        return $this->reflector->isInitialized($object);
     }
 }

@@ -50,6 +50,11 @@ abstract class MirrorCallable implements Mirror, \Countable
         return $this->reflector->name;
     }
 
+    public function comment(): ?string
+    {
+        return $this->reflector->getDocComment() ?: null;
+    }
+
     public function parameters(): Parameters
     {
         return new Parameters($this->reflector);

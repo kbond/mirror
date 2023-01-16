@@ -57,6 +57,11 @@ final class MirrorClassConstant implements Mirror
         return $this->reflector->name;
     }
 
+    public function comment(): ?string
+    {
+        return $this->reflector->getDocComment() ?: null;
+    }
+
     public function isFinal(): bool
     {
         if (!\method_exists($this->reflector, 'isFinal')) {
@@ -71,8 +76,21 @@ final class MirrorClassConstant implements Mirror
         return !$this->isFinal();
     }
 
+    /**
+     * @return MirrorClass<T>
+     */
+    public function class(): MirrorClass
+    {
+        return new MirrorClass($this->reflector->getDeclaringClass()); // @phpstan-ignore-line
+    }
+
     public function reflector(): \ReflectionClassConstant
     {
         return $this->reflector;
+    }
+
+    public function get(): mixed
+    {
+        return $this->reflector->getValue();
     }
 }

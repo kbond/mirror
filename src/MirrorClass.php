@@ -87,14 +87,14 @@ final class MirrorClass implements Mirror
         return $this->reflector->isTrait();
     }
 
+    public function isInstantiable(): bool
+    {
+        return $this->reflector->isInstantiable();
+    }
+
     public function isAbstract(): bool
     {
         return $this->reflector->isAbstract();
-    }
-
-    public function isAnonymous(): bool
-    {
-        return $this->reflector->isAnonymous();
     }
 
     /**

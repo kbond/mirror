@@ -36,6 +36,21 @@ trait MirrorObjectMethods
         return $this->reflector->name; // @phpstan-ignore-line
     }
 
+    public function shortName(): string
+    {
+        return $this->reflector->getShortName();
+    }
+
+    public function comment(): ?string
+    {
+        return $this->reflector->getDocComment() ?: null;
+    }
+
+    public function namespace(): ?string
+    {
+        return $this->reflector->getNamespaceName() ?: null;
+    }
+
     /**
      * @param class-string|object $class
      */
@@ -67,19 +82,38 @@ trait MirrorObjectMethods
         return $this->reflector->getConstructor() ? new MirrorMethod($this->reflector->getConstructor()) : null;
     }
 
-    public function cloneable(): bool
+    public function isFinal(): bool
+    {
+        return $this->reflector->isFinal();
+    }
+
+    public function isCloneable(): bool
     {
         return $this->reflector->isCloneable();
     }
 
-    public function internal(): bool
+    public function isInternal(): bool
     {
         return $this->reflector->isInternal();
     }
 
-    public function userDefined(): bool
+    public function isUserDefined(): bool
     {
         return $this->reflector->isCloneable();
+    }
+
+    public function isAnonymous(): bool
+    {
+        return $this->reflector->isAnonymous();
+    }
+
+    public function isReadonly(): bool
+    {
+        if (!\method_exists($this->reflector, 'isReadOnly')) {
+            return false;
+        }
+
+        return $this->reflector->isReadOnly();
     }
 
     public function file(): ?string
