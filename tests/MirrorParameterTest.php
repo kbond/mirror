@@ -35,7 +35,13 @@ final class MirrorParameterTest extends TestCase
      */
     public function information(): void
     {
-        $this->markTestIncomplete();
+        $parameter = MirrorParameter::for([$this, 'stringable'], 'param2');
+
+        $this->assertTrue($parameter->isOptional());
+        $this->assertFalse($parameter->isRequired());
+        $this->assertFalse($parameter->isVariadic());
+        $this->assertFalse($parameter->hasType());
+        $this->assertNull($parameter->default());
     }
 
     /**

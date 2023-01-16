@@ -30,6 +30,27 @@ final class MirrorFunctionTest extends TestCase
         $this->assertMatchesRegularExpression(\sprintf('#^\(closure\) %s:\d+$#', (new \ReflectionClass(MirrorFunction::class))->getFileName()), (string) MirrorFunction::for('Zenstruck\MirrorFunction::for'));
         $this->assertMatchesRegularExpression(\sprintf('#^\(closure\) %s:\d+$#', (new \ReflectionClass(MirrorFunction::class))->getFileName()), (string) MirrorFunction::for([MirrorFunction::class, 'for']));
     }
+
+    /**
+     * @test
+     */
+    public function wrap(): void
+    {
+        $mirror = MirrorFunction::wrap(new \ReflectionFunction(fn() => null));
+
+        $this->assertSame($mirror, MirrorFunction::wrap($mirror));
+    }
+
+    /**
+     * @test
+     */
+    public function information(): void
+    {
+        $this->assertSame('strlen', MirrorFunction::for('strlen')->reflector()->name);
+        $this->assertNull(MirrorFunction::for('strlen')->this());
+        $this->assertNull(MirrorFunction::for(static fn() => null)->this());
+        $this->assertSame($this, MirrorFunction::for(fn() => null)->this());
+    }
 }
 
 function test_function()

@@ -23,6 +23,10 @@ class Object6
         $this->prop = $prop;
     }
 
+    public function __destruct()
+    {
+    }
+
     public static function factory(string $prop = 'factory'): self
     {
         return new self($prop);

@@ -66,6 +66,10 @@ final class MirrorParameter implements Mirror
 
     public function default(): mixed
     {
+        if (!$this->hasDefault()) {
+            throw new \ReflectionException(); // todo
+        }
+
         return $this->reflector->getDefaultValue();
     }
 
