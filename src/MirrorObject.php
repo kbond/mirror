@@ -80,16 +80,16 @@ final class MirrorObject implements Mirror
 
     public function get(string $property): mixed
     {
-        return $this->properties()->recursive()->getOrFail($property)->get($this->object);
+        return $this->propertyOrFail($property)->get($this->object);
     }
 
     public function set(string $property, mixed $value): void
     {
-        $this->properties()->recursive()->getOrFail($property)->set($value, $this->object);
+        $this->propertyOrFail($property)->set($value, $this->object);
     }
 
     public function isInitialized(string $property): bool
     {
-        return $this->properties()->recursive()->getOrFail($property)->isInitialized($this->object);
+        return $this->propertyOrFail($property)->isInitialized($this->object);
     }
 }

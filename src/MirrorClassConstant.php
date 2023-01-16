@@ -89,7 +89,7 @@ final class MirrorClassConstant implements Mirror
         return $this->reflector;
     }
 
-    public function get(): mixed
+    public function value(): mixed
     {
         return $this->reflector->getValue();
     }

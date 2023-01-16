@@ -137,7 +137,7 @@ final class MirrorClass implements Mirror
 
     public function get(string $property): mixed
     {
-        $property = $this->properties()->recursive()->getOrFail($property);
+        $property = $this->propertyOrFail($property);
 
         if (!$property->isStatic()) {
             throw new \ReflectionException(); // todo
@@ -148,7 +148,7 @@ final class MirrorClass implements Mirror
 
     public function set(string $property, mixed $value): void
     {
-        $property = $this->properties()->recursive()->getOrFail($property);
+        $property = $this->propertyOrFail($property);
 
         if (!$property->isStatic()) {
             throw new \ReflectionException(); // todo

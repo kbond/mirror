@@ -88,7 +88,8 @@ abstract class MirrorObjectMethodsTest extends TestCase
      */
     public function get_methods(): void
     {
-        $methods = $this->createMirrorFor(new Object2())->methods();
+        $mirror = $this->createMirrorFor(new Object2());
+        $methods = $mirror->methods();
 
         $this->assertSame([
             'instanceMethod4',
@@ -149,10 +150,10 @@ abstract class MirrorObjectMethodsTest extends TestCase
             'staticMethod1',
         ], $methods->recursive()->static()->names());
 
-        $this->assertNull($methods->get('invalid'));
-        $this->assertSame('staticMethod1', $methods->getOrFail('staticMethod1')->name());
-        $this->assertFalse($methods->has('invalid'));
-        $this->assertTrue($methods->has('staticMethod1'));
+        $this->assertNull($mirror->method('invalid'));
+        $this->assertSame('staticMethod1', $mirror->methodOrFail('staticMethod1')->name());
+        $this->assertFalse($mirror->hasMethod('invalid'));
+        $this->assertTrue($mirror->hasMethod('staticMethod1'));
     }
 
     /**
@@ -160,7 +161,8 @@ abstract class MirrorObjectMethodsTest extends TestCase
      */
     public function get_properties(): void
     {
-        $properties = $this->createMirrorFor(new Object2())->properties();
+        $mirror = $this->createMirrorFor(new Object2());
+        $properties = $mirror->properties();
 
         $this->assertSame([
             'instanceProp4',
@@ -222,10 +224,10 @@ abstract class MirrorObjectMethodsTest extends TestCase
             'staticProp1',
         ], $properties->recursive()->static()->names());
 
-        $this->assertNull($properties->get('invalid'));
-        $this->assertSame('staticProp1', $properties->getOrFail('staticProp1')->name());
-        $this->assertFalse($properties->has('invalid'));
-        $this->assertTrue($properties->has('staticProp1'));
+        $this->assertNull($mirror->property('invalid'));
+        $this->assertSame('staticProp1', $mirror->propertyOrFail('staticProp1')->name());
+        $this->assertFalse($mirror->hasProperty('invalid'));
+        $this->assertTrue($mirror->hasProperty('staticProp1'));
     }
 
     /**
@@ -233,7 +235,8 @@ abstract class MirrorObjectMethodsTest extends TestCase
      */
     public function get_constants(): void
     {
-        $constants = $this->createMirrorFor(new Object2())->constants();
+        $mirror = $this->createMirrorFor(new Object2());
+        $constants = $mirror->constants();
 
         $this->assertSame([
             'CONST4',
@@ -284,10 +287,10 @@ abstract class MirrorObjectMethodsTest extends TestCase
             'CONST2',
         ], $constants->protected()->private()->names());
 
-        $this->assertNull($constants->get('invalid'));
-        $this->assertSame('CONST10', $constants->getOrFail('CONST10')->name());
-        $this->assertFalse($constants->has('invalid'));
-        $this->assertTrue($constants->has('CONST10'));
+        $this->assertNull($mirror->constant('invalid'));
+        $this->assertSame('CONST10', $mirror->constantOrFail('CONST10')->name());
+        $this->assertFalse($mirror->hasConstant('invalid'));
+        $this->assertTrue($mirror->hasConstant('CONST10'));
     }
 
     /**

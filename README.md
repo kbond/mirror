@@ -49,6 +49,24 @@ $class->call('someStaticMethod', ['arg1', 'arg2']); // mixed
 // matches array keys to method parameter names (order does not matter)
 $class->call('someStaticMethod', ['param2' => 'arg2', 'param1' => 'arg1']);
 
+// methods
+$class->methods(); // Methods|MirrorMethod[]
+$class->hasMethod('methodName'); // bool
+$class->method('methodName'); // ?MirrorMethod
+$class->methodOrFail('methodName'); // MirrorMethod or throws \ReflectionException
+
+// properties
+$class->properties(); // Properties|MirrorProperty[]
+$class->hasProperty('propertyName'); // bool
+$class->property('propertyName'); // ?MirrorProperty
+$class->propertyOrFail('propertyName'); // MirrorProperty or throws \ReflectionException
+
+// constants
+$class->constants(); // ClassConstants|MirrorClassConstant[]
+$class->hasMethod('CONST_NAME'); // bool
+$class->method('CONST_NAME'); // ?MirrorClassConstant
+$class->methodOrFail('CONST_NAME'); // MirrorClassConstant or throws \ReflectionException
+
 // other methods
 $class->constructor(); // ?MirrorMethod
 $class->isA(Some::class); // bool
@@ -71,9 +89,6 @@ $class->namespace(); // string
 $class->parent(); // ?MirrorClass
 $class->interfaces(); // Classes|MirrorClass[]
 $class->traits(); // Traits|MirrorClass[]
-$class->methods(); // Methods|MirrorMethod[]
-$class->properties(); // Properties|MirrorProperty[]
-$class->constants(); // ClassConstants|MirrorClassConstant[]
 ```
 
 #### `MirrorObject`
@@ -95,6 +110,24 @@ $object->call('someMethod', ['arg1', 'arg2']); // mixed
 // matches array keys to method parameter names (order does not matter)
 $object->call('someMethod', ['param2' => 'arg2', 'param1' => 'arg1']);
 
+// methods
+$object->methods(); // Methods|MirrorMethod[]
+$object->hasMethod('methodName'); // bool
+$object->method('methodName'); // ?MirrorMethod
+$object->methodOrFail('methodName'); // MirrorMethod or throws \ReflectionException
+
+// properties
+$object->properties(); // Properties|MirrorProperty[]
+$object->hasProperty('propertyName'); // bool
+$object->property('propertyName'); // ?MirrorProperty
+$object->propertyOrFail('propertyName'); // MirrorProperty or throws \ReflectionException
+
+// constants
+$object->constants(); // ClassConstants|MirrorClassConstant[]
+$object->hasMethod('CONST_NAME'); // bool
+$object->method('CONST_NAME'); // ?MirrorClassConstant
+$object->methodOrFail('CONST_NAME'); // MirrorClassConstant or throws \ReflectionException
+
 // other methods
 $object->object(); // object (wrapped object)
 $object->class(); // MirrorClass
@@ -115,9 +148,6 @@ $object->namespace(); // string
 $object->parent(); // ?MirrorClass
 $object->interfaces(); // Classes|MirrorClass[]
 $object->traits(); // Traits|MirrorClass[]
-$object->methods(); // Methods|MirrorMethod[]
-$object->properties(); // Properties|MirrorProperty[]
-$object->constants(); // ClassConstants|MirrorClassConstant[]
 ```
 
 #### `Classes`

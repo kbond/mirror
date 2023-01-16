@@ -48,21 +48,6 @@ final class Properties extends ClassReflectorIterator
     }
 
     /**
-     * @param \ReflectionClass<object> $class
-     *
-     * @return MirrorProperty<object>
-     */
-    protected function oneForClass(\ReflectionClass $class, string $name): MirrorProperty
-    {
-        return new MirrorProperty($class->getProperty($name));
-    }
-
-    protected function hasForClass(\ReflectionClass $class, string $name): bool
-    {
-        return $class->hasProperty($name);
-    }
-
-    /**
      * @return MirrorProperty<object>[]
      */
     protected function allForClass(\ReflectionClass $class): array

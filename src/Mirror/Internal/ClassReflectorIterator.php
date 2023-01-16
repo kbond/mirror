@@ -27,40 +27,6 @@ abstract class ClassReflectorIterator extends RecursiveClassIterator
 
     private int $flags = 0;
 
-    final public function has(string $name): bool
-    {
-        foreach ($this->recursive()->classes() as $class) {
-            if ($this->hasForClass($class, $name)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @return T
-     */
-    final public function get(string $name): ?object
-    {
-        foreach ($this->recursive()->classes() as $class) {
-            try {
-                return $this->oneForClass($class, $name);
-            } catch (\ReflectionException) {
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @return T
-     */
-    final public function getOrFail(string $name): object
-    {
-        return $this->get($name) ?? throw new \ReflectionException();
-    }
-
     /**
      * @return $this<T>
      */
@@ -101,16 +67,4 @@ abstract class ClassReflectorIterator extends RecursiveClassIterator
     {
         return \array_filter([$this->flags]);
     }
-
-    /**
-     * @param \ReflectionClass<object> $class
-     *
-     * @return T
-     */
-    abstract protected function oneForClass(\ReflectionClass $class, string $name): object;
-
-    /**
-     * @param \ReflectionClass<object> $class
-     */
-    abstract protected function hasForClass(\ReflectionClass $class, string $name): bool;
 }

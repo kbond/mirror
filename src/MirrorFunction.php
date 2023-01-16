@@ -31,12 +31,9 @@ final class MirrorFunction extends MirrorCallable
         return $this->invoke($arguments);
     }
 
-    /**
-     * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
-     */
-    public function invoke(array|Argument $arguments = []): mixed
+    public static function wrap(\ReflectionFunction|self $reflector): self
     {
-        return $this->reflector->invokeArgs($this->normalizeArguments($arguments));
+        return $reflector instanceof self ? $reflector : new self($reflector);
     }
 
     public static function for(callable $callable): self
@@ -46,6 +43,14 @@ final class MirrorFunction extends MirrorCallable
         }
 
         return new self(new \ReflectionFunction(self::closureFrom($callable)));
+    }
+
+    /**
+     * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
+     */
+    public function invoke(array|Argument $arguments = []): mixed
+    {
+        return $this->reflector->invokeArgs($this->normalizeArguments($arguments));
     }
 
     public function reflector(): \ReflectionFunction

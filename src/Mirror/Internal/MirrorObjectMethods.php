@@ -18,7 +18,9 @@ use Zenstruck\Mirror\Methods;
 use Zenstruck\Mirror\Properties;
 use Zenstruck\Mirror\Traits;
 use Zenstruck\MirrorClass;
+use Zenstruck\MirrorClassConstant;
 use Zenstruck\MirrorMethod;
+use Zenstruck\MirrorProperty;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -70,9 +72,87 @@ trait MirrorObjectMethods
         return new ClassConstants($this->reflector);
     }
 
+    /**
+     * @return MirrorClassConstant<T>|null
+     */
+    public function constant(string $name): ?MirrorClassConstant
+    {
+        try {
+            return $this->constantOrFail($name);
+        } catch (\ReflectionException) {
+            return null;
+        }
+    }
+
+    /**
+     * @return MirrorClassConstant<T>
+     */
+    public function constantOrFail(string $name): MirrorClassConstant
+    {
+        foreach ($this->reflectorHierarchy() as $class) {
+            try {
+                return MirrorClassConstant::wrap($class->getReflectionConstant($name) ?: throw new \ReflectionException()); // @phpstan-ignore-line
+            } catch (\ReflectionException) {
+                continue;
+            }
+        }
+
+        throw new \ReflectionException(); // todo
+    }
+
+    public function hasConstant(string $name): bool
+    {
+        foreach ($this->reflectorHierarchy() as $class) {
+            if ($class->hasConstant($name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function properties(): Properties
     {
         return new Properties($this->reflector);
+    }
+
+    /**
+     * @return MirrorProperty<T>|null
+     */
+    public function property(string $name): ?MirrorProperty
+    {
+        try {
+            return $this->propertyOrFail($name);
+        } catch (\ReflectionException) {
+            return null;
+        }
+    }
+
+    /**
+     * @return MirrorProperty<T>
+     */
+    public function propertyOrFail(string $name): MirrorProperty
+    {
+        foreach ($this->reflectorHierarchy() as $class) {
+            try {
+                return MirrorProperty::wrap($class->getProperty($name)); // @phpstan-ignore-line
+            } catch (\ReflectionException) {
+                continue;
+            }
+        }
+
+        throw new \ReflectionException(); // todo
+    }
+
+    public function hasProperty(string $name): bool
+    {
+        foreach ($this->reflectorHierarchy() as $class) {
+            if ($class->hasProperty($name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function methods(): Methods
@@ -81,11 +161,36 @@ trait MirrorObjectMethods
     }
 
     /**
+     * @return MirrorMethod<T>|null
+     */
+    public function method(string $name): ?MirrorMethod
+    {
+        try {
+            return $this->methodOrFail($name);
+        } catch (\ReflectionException) {
+            return null;
+        }
+    }
+
+    /**
+     * @return MirrorMethod<T>
+     */
+    public function methodOrFail(string $name): MirrorMethod
+    {
+        return MirrorMethod::wrap($this->reflector->getMethod($name)); // @phpstan-ignore-line
+    }
+
+    public function hasMethod(string $name): bool
+    {
+        return $this->reflector->hasMethod($name);
+    }
+
+    /**
      * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
      */
     public function call(string $method, array|Argument $arguments = []): mixed
     {
-        return $this->methods()->getOrFail($method)->invoke($arguments, $this->object ?? null);
+        return $this->methodOrFail($method)->invoke($arguments, $this->object ?? null);
     }
 
     /**
@@ -180,5 +285,19 @@ trait MirrorObjectMethods
     public function traits(): Traits
     {
         return new Traits($this->reflector);
+    }
+
+    /**
+     * @return \ReflectionClass<object>[]
+     */
+    private function reflectorHierarchy(): iterable
+    {
+        yield $this->reflector;
+
+        $class = $this->reflector;
+
+        while ($class = $class->getParentClass()) {
+            yield $class;
+        }
     }
 }

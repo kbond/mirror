@@ -40,19 +40,6 @@ final class MirrorMethod extends MirrorCallable
     }
 
     /**
-     * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
-     * @param T|null                                          $object
-     */
-    public function invoke(array|Argument $arguments = [], ?object $object = null): mixed
-    {
-        if (!$object && $this->isInstance()) {
-            throw new \ReflectionException(); // todo
-        }
-
-        return $this->reflector->invokeArgs($object, $this->normalizeArguments($arguments));
-    }
-
-    /**
      * @param class-string<T>|T $object
      *
      * @return self<T>
@@ -64,6 +51,29 @@ final class MirrorMethod extends MirrorCallable
         }
 
         return new self(new \ReflectionMethod($object, $method)); // @phpstan-ignore-line
+    }
+
+    /**
+     * @param \ReflectionMethod|MirrorMethod<T> $reflector
+     *
+     * @return self<T>
+     */
+    public static function wrap(\ReflectionMethod|self $reflector): self
+    {
+        return $reflector instanceof self ? $reflector : new self($reflector); // @phpstan-ignore-line
+    }
+
+    /**
+     * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
+     * @param T|null                                          $object
+     */
+    public function invoke(array|Argument $arguments = [], ?object $object = null): mixed
+    {
+        if (!$object && $this->isInstance()) {
+            throw new \ReflectionException(); // todo
+        }
+
+        return $this->reflector->invokeArgs($object, $this->normalizeArguments($arguments));
     }
 
     public function reflector(): \ReflectionMethod
