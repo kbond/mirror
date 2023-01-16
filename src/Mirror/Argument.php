@@ -76,7 +76,7 @@ final class Argument
             $value = $this->valueFor($type = $parameter->type());
         } catch (UnresolveableArgument $e) {
             if ($parameter->isOptional()) {
-                return $parameter->defaultValue();
+                return $parameter->default();
             }
 
             throw $e;

@@ -29,11 +29,6 @@ abstract class RecursiveClassIterator extends MirrorIterator
      */
     final public function __construct(private \ReflectionClass $class)
     {
-        parent::__construct(function() {
-            foreach ($this->classes() as $class) {
-                yield from $this->allForClass($class);
-            }
-        });
     }
 
     final public function recursive(bool $includeDuplicates = false): static
@@ -47,22 +42,26 @@ abstract class RecursiveClassIterator extends MirrorIterator
 
     final public function getIterator(): \Traversable
     {
-        if ($this->includeDuplicates) {
-            yield from parent::getIterator();
-
-            return;
-        }
-
         $returned = [];
 
-        foreach (parent::getIterator() as $mirror) {
-            if (\in_array($mirror->name(), $returned, true)) {
-                continue;
+        foreach ($this->classes() as $class) {
+            foreach ($this->allForClass($class) as $mirror) {
+                if (\in_array($mirror->name(), $returned, true)) {
+                    continue;
+                }
+
+                if (!$this->includeDuplicates) {
+                    $returned[] = $mirror->name();
+                }
+
+                foreach ($this->filters as $filter) {
+                    if (!$filter($mirror)) {
+                        continue 2;
+                    }
+                }
+
+                yield $mirror;
             }
-
-            $returned[] = $mirror->name();
-
-            yield $mirror;
         }
     }
 
@@ -77,8 +76,10 @@ abstract class RecursiveClassIterator extends MirrorIterator
             return;
         }
 
-        while ($parent = $this->class->getParentClass()) {
-            yield $parent;
+        $class = $this->class;
+
+        while ($class = $class->getParentClass()) {
+            yield $class;
         }
     }
 
@@ -87,5 +88,5 @@ abstract class RecursiveClassIterator extends MirrorIterator
      *
      * @return T[]
      */
-    abstract protected function allForClass(\ReflectionClass $class): array;
+    abstract protected function allForClass(\ReflectionClass $class): iterable;
 }

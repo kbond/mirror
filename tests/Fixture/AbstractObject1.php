@@ -14,22 +14,23 @@ namespace Zenstruck\Tests\Fixture;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class Object6
+abstract class AbstractObject1
 {
-    public string $prop = 'original';
-
-    public function __construct(string $prop = 'constructor')
+    public static function extendableStaticMethod()
     {
-        $this->prop = $prop;
     }
 
-    public static function factory(string $prop = 'factory'): self
+    final public static function finalStaticMethod()
     {
-        return new self($prop);
     }
 
-    public static function closureSelf(): \Closure
+    public function extendableMethod()
     {
-        return fn(self $object) => $object;
     }
+
+    final public function finalMethod()
+    {
+    }
+
+    abstract public function abstractMethod();
 }

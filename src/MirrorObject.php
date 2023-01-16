@@ -11,7 +11,6 @@
 
 namespace Zenstruck;
 
-use Zenstruck\Mirror\Argument;
 use Zenstruck\Mirror\Internal\MirrorObjectMethods;
 
 /**
@@ -32,11 +31,6 @@ final class MirrorObject implements Mirror
     public function __construct(private object $object)
     {
         $this->reflector = new \ReflectionObject($object);
-    }
-
-    public function __toString(): string
-    {
-        return $this->reflector->name;
     }
 
     /**
@@ -63,19 +57,25 @@ final class MirrorObject implements Mirror
     }
 
     /**
+     * @param array<string,mixed> $properties
+     */
+    public function clone(array $properties = []): object
+    {
+        $clone = new self(clone $this->object);
+
+        foreach ($properties as $name => $value) {
+            $clone->set($name, $value);
+        }
+
+        return $clone->object;
+    }
+
+    /**
      * @return MirrorClass<T>
      */
     public function class(): MirrorClass
     {
         return MirrorClass::for($this->object()); // @phpstan-ignore-line
-    }
-
-    /**
-     * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
-     */
-    public function invoke(string $method, array|Argument $arguments = []): mixed
-    {
-        return $this->methods()->recursive()->getOrFail($method)($arguments, $this->object);
     }
 
     public function get(string $property): mixed
@@ -86,5 +86,10 @@ final class MirrorObject implements Mirror
     public function set(string $property, mixed $value): void
     {
         $this->properties()->recursive()->getOrFail($property)->set($value, $this->object);
+    }
+
+    public function isInitialized(string $property): bool
+    {
+        return $this->properties()->recursive()->getOrFail($property)->isInitialized($this->object);
     }
 }

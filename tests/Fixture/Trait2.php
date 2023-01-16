@@ -14,13 +14,7 @@ namespace Zenstruck\Tests\Fixture;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class Object4
+trait Trait2
 {
-    public function __invoke()
-    {
-    }
-
-    public static function staticMethod()
-    {
-    }
+    use Trait1, Trait4;
 }

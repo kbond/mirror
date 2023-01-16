@@ -263,4 +263,16 @@ final class MirrorTypeTest extends TestCase
         $this->assertTrue($fn->parameters()->get(1)->accepts(new Object5()));
         $this->assertFalse($fn->parameters()->get(1)->accepts(new Object5(), true));
     }
+
+    /**
+     * @test
+     */
+    public function is_built_in(): void
+    {
+        $this->assertFalse(MirrorFunction::for(fn(): Object1 => null)->returnType()->isBuiltin());
+        $this->assertTrue(MirrorFunction::for(fn(): string => null)->returnType()->isBuiltin());
+        $this->assertTrue(MirrorFunction::for(fn() => null)->returnType()->isBuiltin());
+        $this->assertFalse(MirrorFunction::for(fn(): string|Object1 => null)->returnType()->isBuiltin());
+        $this->assertTrue(MirrorFunction::for(fn(): string|int => null)->returnType()->isBuiltin());
+    }
 }

@@ -14,13 +14,6 @@ namespace Zenstruck\Tests\Fixture;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class Object4
+interface Interface1
 {
-    public function __invoke()
-    {
-    }
-
-    public static function staticMethod()
-    {
-    }
 }

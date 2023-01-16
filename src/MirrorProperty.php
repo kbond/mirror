@@ -111,6 +111,19 @@ final class MirrorProperty implements Mirror
     }
 
     /**
+     * @param int-mask<MirrorType::EXACT,MirrorType::COVARIANCE,MirrorType::CONTRAVARIANCE,MirrorType::STRICT,MirrorType::VERY_STRICT> $mode
+     */
+    public function supports(string $type, int $mode = MirrorType::EXACT | MirrorType::COVARIANCE): bool
+    {
+        return $this->type()->supports($type, $mode);
+    }
+
+    public function accepts(mixed $value, bool $strict = false): bool
+    {
+        return $this->type()->accepts($value, $strict);
+    }
+
+    /**
      * @param T|null $object
      */
     public function get(?object $object = null): mixed
@@ -123,7 +136,7 @@ final class MirrorProperty implements Mirror
      */
     public function set(mixed $value, ?object $object = null): void
     {
-        $this->reflector->setValue($object ?? $value, $object ? $value : null);
+        $object ? $this->reflector->setValue($object, $value) : $this->reflector->setValue($value);
     }
 
     public function reflector(): \ReflectionProperty
@@ -138,12 +151,11 @@ final class MirrorProperty implements Mirror
 
     public function default(): mixed
     {
-        return $this->reflector->getDefaultValue();
-    }
+        if (!$this->hasDefault()) {
+            throw new \ReflectionException(); // todo
+        }
 
-    public function isDefault(): bool
-    {
-        return $this->reflector->isDefault();
+        return $this->reflector->getDefaultValue();
     }
 
     /**

@@ -11,6 +11,7 @@
 
 namespace Zenstruck\Mirror\Internal;
 
+use Zenstruck\Mirror\Argument;
 use Zenstruck\Mirror\ClassConstants;
 use Zenstruck\Mirror\Classes;
 use Zenstruck\Mirror\Methods;
@@ -27,6 +28,11 @@ use Zenstruck\MirrorMethod;
 trait MirrorObjectMethods
 {
     use HasAttributes;
+
+    public function __toString(): string
+    {
+        return $this->reflector->name;
+    }
 
     /**
      * @return class-string<T>
@@ -56,7 +62,7 @@ trait MirrorObjectMethods
      */
     public function isA(string|object $class): bool
     {
-        return \is_a($this->name(), $class, true); // @phpstan-ignore-line
+        return \is_a($this->name(), \is_object($class) ? $class::class : $class, true); // @phpstan-ignore-line
     }
 
     public function constants(): ClassConstants
@@ -75,6 +81,14 @@ trait MirrorObjectMethods
     }
 
     /**
+     * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
+     */
+    public function call(string $method, array|Argument $arguments = []): mixed
+    {
+        return $this->methods()->getOrFail($method)->invoke($arguments, $this->object ?? null);
+    }
+
+    /**
      * @return MirrorMethod<T|object>|null
      */
     public function constructor(): ?MirrorMethod
@@ -85,6 +99,11 @@ trait MirrorObjectMethods
     public function isFinal(): bool
     {
         return $this->reflector->isFinal();
+    }
+
+    public function isExtendable(): bool
+    {
+        return !$this->isFinal();
     }
 
     public function isCloneable(): bool
@@ -107,13 +126,18 @@ trait MirrorObjectMethods
         return $this->reflector->isAnonymous();
     }
 
-    public function isReadonly(): bool
+    public function isReadOnly(): bool
     {
         if (!\method_exists($this->reflector, 'isReadOnly')) {
             return false;
         }
 
         return $this->reflector->isReadOnly();
+    }
+
+    public function isModifiable(): bool
+    {
+        return !$this->isReadOnly();
     }
 
     public function file(): ?string
@@ -134,8 +158,10 @@ trait MirrorObjectMethods
     public function parents(): Classes
     {
         return new Classes(function() {
-            while ($parent = $this->parent()) {
-                yield $parent;
+            $class = $this;
+
+            while ($class = $class->parent()) {
+                yield $class;
             }
         });
     }
@@ -144,7 +170,7 @@ trait MirrorObjectMethods
     {
         return new Classes(\array_map(
             static fn(\ReflectionClass $c) => new MirrorClass($c),
-            $this->reflector->getInterfaces()
+            \array_values($this->reflector->getInterfaces()),
         ));
     }
 

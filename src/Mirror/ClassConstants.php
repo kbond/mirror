@@ -44,7 +44,7 @@ final class ClassConstants extends ClassReflectorIterator
      */
     protected function oneForClass(\ReflectionClass $class, string $name): MirrorClassConstant
     {
-        return new MirrorClassConstant($class->getConstant($name));
+        return new MirrorClassConstant($class->getReflectionConstant($name) ?: throw new \ReflectionException());
     }
 
     protected function hasForClass(\ReflectionClass $class, string $name): bool
@@ -59,7 +59,7 @@ final class ClassConstants extends ClassReflectorIterator
     {
         return \array_map(
             static fn(\ReflectionClassConstant $m) => new MirrorClassConstant($m),
-            $class->getConstants(...$this->flags())
+            $class->getReflectionConstants(...$this->flags())
         );
     }
 }

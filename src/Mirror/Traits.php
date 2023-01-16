@@ -26,8 +26,16 @@ final class Traits extends RecursiveClassIterator
     /**
      * @return MirrorClass<object>[]
      */
-    protected function allForClass(\ReflectionClass $class): array
+    protected function allForClass(\ReflectionClass $class): iterable
     {
-        return \array_map(static fn(\ReflectionClass $c) => new MirrorClass($c), $class->getTraits());
+        foreach ($class->getTraits() as $trait) {
+            yield new MirrorClass($trait);
+
+            foreach ($trait->getTraits() as $nestedTrait) {
+                yield new MirrorClass($nestedTrait);
+
+                yield from $this->allForClass($nestedTrait);
+            }
+        }
     }
 }

@@ -31,11 +31,6 @@ final class MirrorClass implements Mirror
     {
     }
 
-    public function __toString(): string
-    {
-        return $this->reflector->name;
-    }
-
     /**
      * @param class-string<T>|T $class
      *
@@ -70,11 +65,6 @@ final class MirrorClass implements Mirror
     public function constructor(): ?MirrorMethod
     {
         return $this->reflector->getConstructor() ? new MirrorMethod($this->reflector->getConstructor()) : null; // @phpstan-ignore-line
-    }
-
-    public function isClass(): bool
-    {
-        return $this->reflector->isInstantiable();
     }
 
     public function isInterface(): bool

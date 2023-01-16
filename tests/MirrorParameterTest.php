@@ -29,4 +29,30 @@ final class MirrorParameterTest extends TestCase
     {
         $this->assertSame(\sprintf('$param2 (#1) <%s::%s()>', __CLASS__, __FUNCTION__), (string) MirrorParameter::for([$this, 'stringable'], 'param2'));
     }
+
+    /**
+     * @test
+     */
+    public function information(): void
+    {
+        $this->markTestIncomplete();
+    }
+
+    /**
+     * @test
+     */
+    public function wrap(): void
+    {
+        $mirror = MirrorParameter::wrap(new \ReflectionParameter([$this, 'stringable'], 'param1'));
+
+        $this->assertSame($mirror, MirrorParameter::wrap($mirror));
+    }
+
+    /**
+     * @test
+     */
+    public function reflector(): void
+    {
+        $this->assertSame('param1', MirrorParameter::for([$this, 'stringable'], 'param1')->reflector()->name);
+    }
 }

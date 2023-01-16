@@ -21,11 +21,10 @@ namespace Zenstruck\Mirror;
  */
 class Iterator implements \IteratorAggregate, \Countable
 {
+    /** @var (callable(T):bool)[] */
+    protected array $filters = [];
     /** @var \Traversable<T>|\Closure():\Traversable<T> */
     private \Traversable|\Closure $items;
-
-    /** @var (callable(T):bool)[] */
-    private array $filters = [];
 
     /**
      * @param iterable<T>|\Closure():\Traversable<T> $items

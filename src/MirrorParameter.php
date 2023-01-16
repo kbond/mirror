@@ -64,9 +64,14 @@ final class MirrorParameter implements Mirror
         return $this->reflector->isVariadic();
     }
 
-    public function defaultValue(): mixed
+    public function default(): mixed
     {
         return $this->reflector->getDefaultValue();
+    }
+
+    public function hasDefault(): bool
+    {
+        return $this->reflector->isDefaultValueAvailable();
     }
 
     public function function(): MirrorCallable
@@ -79,6 +84,11 @@ final class MirrorParameter implements Mirror
     public function position(): int
     {
         return $this->reflector->getPosition();
+    }
+
+    public function hasType(): bool
+    {
+        return $this->reflector->hasType();
     }
 
     public function type(): MirrorType

@@ -106,6 +106,16 @@ final class MirrorMethod extends MirrorCallable
         return !$this->isAbstract();
     }
 
+    public function isConstructor(): bool
+    {
+        return $this->reflector->isConstructor();
+    }
+
+    public function isDestructor(): bool
+    {
+        return $this->reflector->isDestructor();
+    }
+
     /**
      * @return MirrorClass<T>
      */

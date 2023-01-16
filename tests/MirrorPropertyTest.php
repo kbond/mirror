@@ -19,8 +19,10 @@ use Zenstruck\MirrorProperty;
  */
 final class MirrorPropertyTest extends TestCase
 {
-    private static $static;
-    private $instance;
+    private static string $static;
+
+    /** @var string */
+    private $instance = 'foo';
 
     /**
      * @test
@@ -29,5 +31,50 @@ final class MirrorPropertyTest extends TestCase
     {
         $this->assertSame(__CLASS__.'::$static', (string) MirrorProperty::for($this, 'static'));
         $this->assertSame(__CLASS__.'::$instance', (string) MirrorProperty::for($this, 'instance'));
+    }
+
+    /**
+     * @test
+     */
+    public function information(): void
+    {
+        $instance = MirrorProperty::for($this, 'instance');
+        $static = MirrorProperty::for($this, 'static');
+
+        $this->assertSame('/** @var string */', $instance->comment());
+        $this->assertNull($static->comment());
+        $this->assertSame(__CLASS__, $instance->class()->name());
+        $this->assertFalse($instance->isReadOnly());
+        $this->assertTrue($instance->isModifiable());
+        $this->assertTrue($instance->isInstance());
+        $this->assertFalse($instance->isPromoted());
+        $this->assertFalse($instance->isPublic());
+        $this->assertFalse($instance->isProtected());
+        $this->assertTrue($instance->isPrivate());
+        $this->assertSame(['mixed'], $instance->type()->types());
+        $this->assertTrue($instance->supports('string'));
+        $this->assertTrue($instance->accepts('string'));
+        $this->assertFalse($instance->hasType());
+        $this->assertTrue($instance->hasDefault());
+        $this->assertFalse($static->hasDefault());
+        $this->assertSame('foo', $instance->default());
+    }
+
+    /**
+     * @test
+     */
+    public function wrap(): void
+    {
+        $mirror = MirrorProperty::wrap(new \ReflectionProperty(self::class, 'instance'));
+
+        $this->assertSame($mirror, MirrorProperty::wrap($mirror));
+    }
+
+    /**
+     * @test
+     */
+    public function reflector(): void
+    {
+        $this->assertSame('static', MirrorProperty::for($this, 'static')->reflector()->name);
     }
 }

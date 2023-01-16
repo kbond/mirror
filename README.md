@@ -42,12 +42,18 @@ $object = $class->instantiateWith('staticNamedConstructor', ['arg1', 'arg2']);
 $class->get('someStaticProperty'); // mixed
 $class->set('someStaticProperty', 'value'); // void
 
+// call a static method (can be any visibility)
+$class->call('someStaticMethod'); // mixed
+$class->call('someStaticMethod', ['arg1', 'arg2']); // mixed
+
+// matches array keys to method parameter names (order does not matter)
+$class->call('someStaticMethod', ['param2' => 'arg2', 'param1' => 'arg1']);
+
 // other methods
 $class->constructor(); // ?MirrorMethod
 $class->isA(Some::class); // bool
 $class->isA($objectInstance); // bool
 $class->isAbstract(); // bool
-$class->isClass(); // bool
 $class->isInterface(); // bool
 $class->isInstantiable(); // bool
 $class->isTrait(); // bool
@@ -83,11 +89,11 @@ $object->get('someProperty'); // mixed (can be static or instance property)
 $object->set('someProperty', 'value'); // void (can be static or instance property)
 
 // call a method (can be any visibility)
-$object->invoke('someMethod'); // mixed
-$object->invoke('someMethod', ['arg1', 'arg2']); // mixed
+$object->call('someMethod'); // mixed
+$object->call('someMethod', ['arg1', 'arg2']); // mixed
 
 // matches array keys to method parameter names (order does not matter)
-$class->invoke('someMethod', ['param2' => 'arg2', 'param1' => 'arg1']);
+$object->call('someMethod', ['param2' => 'arg2', 'param1' => 'arg1']);
 
 // other methods
 $object->object(); // object (wrapped object)

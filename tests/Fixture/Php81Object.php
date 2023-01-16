@@ -14,13 +14,11 @@ namespace Zenstruck\Tests\Fixture;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class Object4
+final class Php81Object
 {
-    public function __invoke()
-    {
-    }
+    final public const CONST1 = null;
+    public const CONST2 = null;
 
-    public static function staticMethod()
-    {
-    }
+    public readonly string $prop1;
+    public string $prop2;
 }
