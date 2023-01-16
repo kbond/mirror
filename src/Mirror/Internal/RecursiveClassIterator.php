@@ -36,18 +36,11 @@ abstract class RecursiveClassIterator extends MirrorIterator
         });
     }
 
-    final public function recursive(): static
+    final public function recursive(bool $includeDuplicates = false): static
     {
         $clone = clone $this;
         $clone->recursive = true;
-
-        return $clone;
-    }
-
-    final public function includeDuplicates(): static
-    {
-        $clone = clone $this;
-        $clone->includeDuplicates = true;
+        $clone->includeDuplicates = $includeDuplicates;
 
         return $clone;
     }

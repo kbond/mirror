@@ -67,6 +67,18 @@ class Iterator implements \IteratorAggregate, \Countable
     }
 
     /**
+     * @template V
+     *
+     * @param callable(T):V $fn
+     *
+     * @return V[]
+     */
+    public function map(callable $fn): array
+    {
+        return \array_map($fn, $this->all());
+    }
+
+    /**
      * @return \Traversable<T>|T[]
      */
     public function getIterator(): \Traversable

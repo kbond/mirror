@@ -27,6 +27,6 @@ abstract class MirrorIterator extends Iterator
      */
     final public function names(): array
     {
-        return \array_map(static fn(Mirror $p) => $p->name(), $this->all());
+        return $this->map(static fn(Mirror $p) => $p->name());
     }
 }
