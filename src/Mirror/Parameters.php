@@ -11,17 +11,18 @@
 
 namespace Zenstruck\Mirror;
 
-use Zenstruck\Mirror\Internal\Iterator;
+use Zenstruck\Mirror\Internal\AttributesMirrorIterator;
 use Zenstruck\MirrorParameter;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  *
- * @extends Iterator<MirrorParameter>
+ * @extends AttributesMirrorIterator<MirrorParameter>
  *
- * @method MirrorParameter[] getIterator()
+ * @method MirrorParameter[]    getIterator()
+ * @method MirrorParameter|null first()
  */
-final class Parameters extends Iterator
+final class Parameters extends AttributesMirrorIterator
 {
     public function __construct(private \ReflectionFunctionAbstract $function)
     {
@@ -51,14 +52,6 @@ final class Parameters extends Iterator
     public function optional(): self
     {
         return $this->filter(fn(MirrorParameter $p) => $p->isOptional());
-    }
-
-    /**
-     * @return string[]
-     */
-    public function names(): array
-    {
-        return \array_map(static fn(MirrorParameter $p) => $p->name(), $this->all());
     }
 
     protected function iterator(): \Traversable

@@ -11,119 +11,124 @@
 
 namespace Zenstruck\Mirror;
 
-use Zenstruck\Mirror\Internal\Iterator;
+use Zenstruck\Mirror\Internal\MirrorIterator;
+use Zenstruck\MirrorAttribute;
+use Zenstruck\MirrorCallable;
+use Zenstruck\MirrorClass;
+use Zenstruck\MirrorClassConstant;
+use Zenstruck\MirrorFunction;
+use Zenstruck\MirrorMethod;
+use Zenstruck\MirrorObject;
+use Zenstruck\MirrorParameter;
+use Zenstruck\MirrorProperty;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  *
  * @template T of object
- * @extends Iterator<T>
+ * @template V of AttributesMirror
+ *
+ * @extends MirrorIterator<MirrorAttribute<T,V>>
+ *
+ * @method MirrorAttribute[]    getIterator()
+ * @method MirrorAttribute|null first()
  */
-final class Attributes extends Iterator
+final class Attributes extends MirrorIterator
 {
     private ?string $name = null;
     private int $flags = 0;
-    private bool $instantiate = false;
 
-    /**
-     * @param \ReflectionClass<object>|\ReflectionClassConstant|\ReflectionFunctionAbstract|\ReflectionParameter|\ReflectionProperty $reflector
-     */
-    public function __construct(
-        private \ReflectionClass|\ReflectionClassConstant|\ReflectionFunctionAbstract|\ReflectionParameter|\ReflectionProperty $reflector
-    ) {
-    }
-
-    /**
-     * @param \ReflectionClass<object>|\ReflectionClassConstant|\ReflectionFunctionAbstract|\ReflectionParameter|\ReflectionProperty $reflector
-     *
-     * @return self<\ReflectionAttribute<object>>
-     */
-    public static function for(\ReflectionClass|\ReflectionClassConstant|\ReflectionFunctionAbstract|\ReflectionParameter|\ReflectionProperty $reflector): self
+    public function __construct(private AttributesMirror $mirror)
     {
-        return new self($reflector); // @phpstan-ignore-line
     }
 
     /**
-     * @template V of object
+     * @param object|class-string|callable $reflector
      *
-     * @param class-string<V> $name
-     *
-     * @return \ReflectionAttribute<V>|null
+     * @return self<object,AttributesMirror>
      */
-    public function firstOf(string $name): ?\ReflectionAttribute
+    public static function for(callable|object|string $reflector): self
     {
-        return $this->of($name)->first(); // @phpstan-ignore-line
+        return new self(
+            match (true) {
+                $reflector instanceof AttributesMirror => $reflector,
+                $reflector instanceof \ReflectionClass => MirrorClass::wrap($reflector),
+                $reflector instanceof \ReflectionClassConstant => MirrorClassConstant::wrap($reflector),
+                $reflector instanceof \ReflectionProperty => MirrorProperty::wrap($reflector),
+                $reflector instanceof \ReflectionMethod => MirrorMethod::wrap($reflector),
+                $reflector instanceof \ReflectionFunction => MirrorFunction::wrap($reflector),
+                $reflector instanceof \ReflectionParameter => MirrorParameter::wrap($reflector),
+                \is_callable($reflector) => MirrorCallable::for($reflector),
+                \is_object($reflector) => MirrorObject::for($reflector),
+                default => MirrorClass::for($reflector),
+            }
+        );
     }
 
     /**
-     * @template V of object
+     * @template Z of object
      *
-     * @param class-string<V> $name
+     * @param class-string<Z> $name
      *
-     * @return V|null
+     * @return MirrorAttribute<Z,V>|null
      */
-    public function firstInstantiatedOf(string $name): ?object
+    public function firstOf(string $name, bool $instanceOf = false): ?MirrorAttribute
     {
-        return $this->instantiate($name)->first(); // @phpstan-ignore-line
+        return $this->of($name, $instanceOf)->first();
     }
 
     /**
-     * @param class-string $name
+     * @template Z of object
+     *
+     * @param class-string<Z> $name
+     *
+     * @return Z|null
      */
-    public function has(string $name): bool
+    public function firstInstantiatedOf(string $name, bool $instanceOf = false): ?object
     {
-        return (bool) $this->reflector->getAttributes($name, $this->flags);
+        return $this->firstOf($name, $instanceOf)?->instantiate();
     }
 
     /**
-     * @template V of object
+     * @template Z of object
      *
-     * @param class-string<V> $name
+     * @param class-string<Z> $name
      *
-     * @return $this<\ReflectionAttribute<V>>
+     * @return $this<Z,V>
      */
-    public function of(string $name): self
+    public function of(string $name, bool $instanceOf = false): self
     {
         $clone = clone $this;
         $clone->name = $name;
+        $clone->flags = $instanceOf ? \ReflectionAttribute::IS_INSTANCEOF : 0;
 
         return $clone;
     }
 
     /**
-     * @return $this<T>
+     * @return \Traversable<T>
      */
-    public function instanceOf(): self
+    public function instantiate(): \Traversable
     {
-        $clone = clone $this;
-        $clone->flags |= \ReflectionAttribute::IS_INSTANCEOF;
-
-        return $clone;
-    }
-
-    /**
-     * @template V of object
-     *
-     * @param class-string<V>|null $name
-     *
-     * @return $this<V>
-     */
-    public function instantiate(?string $name = null): self
-    {
-        $clone = clone $this;
-        $clone->instantiate = true;
-
-        if ($name) {
-            $clone->name = $name;
+        foreach ($this as $attribute) {
+            yield $attribute->instantiate(); // @phpstan-ignore-line
         }
+    }
 
-        return $clone;
+    /**
+     * @template Z of object
+     *
+     * @param class-string<Z> $name
+     */
+    public function has(string $name, bool $instanceOf = false): bool
+    {
+        return isset($this->mirror->reflector()->getAttributes($name, $instanceOf ? \ReflectionAttribute::IS_INSTANCEOF : 0)[0]);
     }
 
     protected function iterator(): \Traversable
     {
-        foreach ($this->reflector->getAttributes($this->name, $this->flags) as $attribute) {
-            yield $this->instantiate ? $attribute->newInstance() : $attribute; // @phpstan-ignore-line
+        foreach ($this->mirror->reflector()->getAttributes($this->name, $this->flags) as $attribute) {
+            yield new MirrorAttribute($attribute, $this->mirror); // @phpstan-ignore-line
         }
     }
 }

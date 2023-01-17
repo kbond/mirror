@@ -19,7 +19,8 @@ use Zenstruck\MirrorClass;
  *
  * @extends RecursiveClassIterator<MirrorClass>
  *
- * @method MirrorClass[] getIterator()
+ * @method MirrorClass[]    getIterator()
+ * @method MirrorClass|null first()
  */
 final class Traits extends RecursiveClassIterator
 {
@@ -31,10 +32,12 @@ final class Traits extends RecursiveClassIterator
         foreach ($class->getTraits() as $trait) {
             yield new MirrorClass($trait);
 
-            foreach ($trait->getTraits() as $nestedTrait) {
-                yield new MirrorClass($nestedTrait);
+            foreach ($trait->getTraits() as $nestedTrait1) {
+                yield new MirrorClass($nestedTrait1);
 
-                yield from $this->allForClass($nestedTrait);
+                foreach ($this->allForClass($nestedTrait1) as $nestedTrait2) {
+                    yield $nestedTrait2;
+                }
             }
         }
     }

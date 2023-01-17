@@ -11,6 +11,7 @@
 
 namespace Zenstruck;
 
+use Zenstruck\Mirror\AttributesMirror;
 use Zenstruck\Mirror\Internal\MirrorObjectMethods;
 
 /**
@@ -18,7 +19,7 @@ use Zenstruck\Mirror\Internal\MirrorObjectMethods;
  *
  * @template T of object
  */
-final class MirrorObject implements Mirror
+final class MirrorObject implements AttributesMirror
 {
     /** @use MirrorObjectMethods<T> */
     use MirrorObjectMethods;

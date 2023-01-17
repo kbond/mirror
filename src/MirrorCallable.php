@@ -12,6 +12,7 @@
 namespace Zenstruck;
 
 use Zenstruck\Mirror\Argument;
+use Zenstruck\Mirror\AttributesMirror;
 use Zenstruck\Mirror\Exception\UnresolveableArgument;
 use Zenstruck\Mirror\Internal\HasAttributes;
 use Zenstruck\Mirror\Parameters;
@@ -19,7 +20,7 @@ use Zenstruck\Mirror\Parameters;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-abstract class MirrorCallable implements Mirror, \Countable
+abstract class MirrorCallable implements AttributesMirror, \Countable
 {
     use HasAttributes;
 
@@ -38,6 +39,23 @@ abstract class MirrorCallable implements Mirror, \Countable
         }
 
         return "(function) {$this->reflector->name}()";
+    }
+
+    public static function for(callable $callable): self
+    {
+        if (\is_string($callable) && \str_contains($callable, '::')) {
+            $callable = \explode('::', $callable);
+        }
+
+        if (\is_object($callable) && !$callable instanceof \Closure) {
+            $callable = [$callable, '__invoke'];
+        }
+
+        if (\is_array($callable)) {
+            return new MirrorMethod(new \ReflectionMethod($callable[0], $callable[1]));
+        }
+
+        return new MirrorFunction(new \ReflectionFunction($callable)); // @phpstan-ignore-line
     }
 
     final public static function closureFrom(callable $callable): \Closure

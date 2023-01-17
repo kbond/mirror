@@ -19,7 +19,8 @@ use Zenstruck\MirrorMethod;
  *
  * @extends ClassReflectorIterator<MirrorMethod>
  *
- * @method MirrorMethod[] getIterator()
+ * @method MirrorMethod[]    getIterator()
+ * @method MirrorMethod|null first()
  */
 final class Methods extends ClassReflectorIterator
 {

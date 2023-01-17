@@ -19,7 +19,8 @@ use Zenstruck\MirrorProperty;
  *
  * @extends ClassReflectorIterator<MirrorProperty>
  *
- * @method MirrorProperty[] getIterator()
+ * @method MirrorProperty[]    getIterator()
+ * @method MirrorProperty|null first()
  */
 final class Properties extends ClassReflectorIterator
 {

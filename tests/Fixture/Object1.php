@@ -14,30 +14,60 @@ namespace Zenstruck\Tests\Fixture;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-#[Attribute1('first')]
+#[Attribute2('first')]
 #[Attribute1('second')]
-#[Attribute2('third')]
-#[Attribute3('forth')]
+#[Attribute1('third')]
+#[Attribute3('fourth')]
 class Object1 implements Interface2
 {
     use Trait2;
 
+    #[Attribute2('first')]
+    #[Attribute1('second')]
+    #[Attribute1('third')]
+    #[Attribute3('fourth')]
     public const CONST1 = null;
+
+    #[Attribute2('first')]
     protected const CONST2 = null;
+
     private const CONST3 = null;
+
+    #[Attribute2('second')]
     private const CONST10 = null;
 
+    #[Attribute2('first')]
+    #[Attribute1('second')]
+    #[Attribute1('third')]
+    #[Attribute3('fourth')]
     public string $instanceProp1;
+
+    #[Attribute2('first')]
     protected string $instanceProp2;
 
     private static string $staticProp1;
     private string $instanceProp3;
+
+    #[Attribute2('second')]
     private string $instanceProp10;
 
-    public function __construct()
-    {
+    #[Attribute2('first')]
+    #[Attribute1('second')]
+    #[Attribute1('third')]
+    #[Attribute3('fourth')]
+    public function __construct(
+        #[Attribute2('first')]
+        #[Attribute1('second')]
+        #[Attribute1('third')]
+        #[Attribute3('fourth')]
+        string $param = '',
+
+        #[Attribute2('first')]
+        string $param2 = '',
+    ) {
     }
 
+    #[Attribute2('first')]
     public function instanceMethod1(): void
     {
     }
@@ -55,6 +85,7 @@ class Object1 implements Interface2
     {
     }
 
+    #[Attribute2('second')]
     private function instanceMethod10($arg = 'foo'): string
     {
         return $arg;

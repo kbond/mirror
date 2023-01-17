@@ -275,7 +275,7 @@ trait MirrorObjectMethods
     {
         return new Classes(\array_map(
             static fn(\ReflectionClass $c) => new MirrorClass($c),
-            \array_values($this->reflector->getInterfaces()),
+            $this->reflector->getInterfaces()
         ));
     }
 

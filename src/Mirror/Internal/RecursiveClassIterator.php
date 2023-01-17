@@ -11,15 +11,15 @@
 
 namespace Zenstruck\Mirror\Internal;
 
-use Zenstruck\Mirror;
+use Zenstruck\Mirror\AttributesMirror;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  *
- * @template T of Mirror
- * @extends MirrorIterator<T>
+ * @template T of AttributesMirror
+ * @extends AttributesMirrorIterator<T>
  */
-abstract class RecursiveClassIterator extends MirrorIterator
+abstract class RecursiveClassIterator extends AttributesMirrorIterator
 {
     private bool $recursive = false;
     private bool $includeDuplicates = false;

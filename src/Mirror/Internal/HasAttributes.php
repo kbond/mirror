@@ -18,11 +18,8 @@ use Zenstruck\Mirror\Attributes;
  */
 trait HasAttributes
 {
-    /**
-     * @return Attributes<\ReflectionAttribute<object>>
-     */
     public function attributes(): Attributes
     {
-        return new Attributes($this->reflector); // @phpstan-ignore-line
+        return new Attributes($this); // @phpstan-ignore-line
     }
 }

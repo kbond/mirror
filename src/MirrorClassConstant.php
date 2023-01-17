@@ -11,6 +11,7 @@
 
 namespace Zenstruck;
 
+use Zenstruck\Mirror\AttributesMirror;
 use Zenstruck\Mirror\Internal\HasAttributes;
 use Zenstruck\Mirror\Internal\VisibilityMethods;
 
@@ -19,7 +20,7 @@ use Zenstruck\Mirror\Internal\VisibilityMethods;
  *
  * @template T of object
  */
-final class MirrorClassConstant implements Mirror
+final class MirrorClassConstant implements AttributesMirror
 {
     use HasAttributes, VisibilityMethods;
 

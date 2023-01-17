@@ -11,12 +11,12 @@
 
 namespace Zenstruck\Mirror\Internal;
 
-use Zenstruck\Mirror;
+use Zenstruck\Mirror\AttributesMirror;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  *
- * @template T of Mirror
+ * @template T of AttributesMirror
  * @extends RecursiveClassIterator<T>
  */
 abstract class ClassReflectorIterator extends RecursiveClassIterator

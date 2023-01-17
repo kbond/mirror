@@ -18,5 +18,11 @@ interface Mirror extends \Stringable
 {
     public function name(): string;
 
-    public function reflector(): \Reflector;
+    /**
+     * For some reason {@see \ReflectionAttribute} isn't detected as an
+     * instance of {@see \Reflector} by PHP 8 (at least).
+     *
+     * @return \Reflector
+     */
+    public function reflector(): object;
 }

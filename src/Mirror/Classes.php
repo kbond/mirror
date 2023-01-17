@@ -11,17 +11,18 @@
 
 namespace Zenstruck\Mirror;
 
-use Zenstruck\Mirror\Internal\MirrorIterator;
+use Zenstruck\Mirror\Internal\AttributesMirrorIterator;
 use Zenstruck\MirrorClass;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  *
- * @extends MirrorIterator<MirrorClass>
+ * @extends AttributesMirrorIterator<MirrorClass>
  *
- * @method MirrorClass[] getIterator()
+ * @method MirrorClass[]    getIterator()
+ * @method MirrorClass|null first()
  */
-final class Classes extends MirrorIterator
+final class Classes extends AttributesMirrorIterator
 {
     /**
      * @param iterable<MirrorClass<object>>|\Closure():MirrorClass<object> $iterator
@@ -35,6 +36,8 @@ final class Classes extends MirrorIterator
      */
     protected function iterator(): \Traversable
     {
-        yield from \is_iterable($this->iterator) ? $this->iterator : ($this->iterator)(); // @phpstan-ignore-line
+        foreach (\is_iterable($this->iterator) ? $this->iterator : ($this->iterator)() as $class) { // @phpstan-ignore-line
+            yield $class;
+        }
     }
 }

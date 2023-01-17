@@ -40,11 +40,11 @@ final class MirrorMethod extends MirrorCallable
     }
 
     /**
-     * @param class-string<T>|T $object
+     * @param class-string<T>|T|(T&callable) $object
      *
      * @return self<T>
      */
-    public static function for(string|object $object, ?string $method = null): self
+    public static function for(string|object|callable $object, ?string $method = null): self
     {
         if (!$method && \is_object($object) && \is_callable($object)) {
             $method = '__invoke';

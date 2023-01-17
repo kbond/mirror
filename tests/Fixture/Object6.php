@@ -27,6 +27,18 @@ class Object6
     {
     }
 
+    #[Attribute2('first')]
+    #[Attribute1('second')]
+    #[Attribute1('third')]
+    #[Attribute3('fourth')]
+    public function __invoke()
+    {
+    }
+
+    #[Attribute2('first')]
+    #[Attribute1('second')]
+    #[Attribute1('third')]
+    #[Attribute3('fourth')]
     public static function factory(string $prop = 'factory'): self
     {
         return new self($prop);
@@ -35,5 +47,13 @@ class Object6
     public static function closureSelf(): \Closure
     {
         return fn(self $object) => $object;
+    }
+
+    #[Attribute2('first')]
+    #[Attribute1('second')]
+    #[Attribute1('third')]
+    #[Attribute3('fourth')]
+    public function method()
+    {
     }
 }

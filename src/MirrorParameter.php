@@ -11,12 +11,13 @@
 
 namespace Zenstruck;
 
+use Zenstruck\Mirror\AttributesMirror;
 use Zenstruck\Mirror\Internal\HasAttributes;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-final class MirrorParameter implements Mirror
+final class MirrorParameter implements AttributesMirror
 {
     use HasAttributes;
 

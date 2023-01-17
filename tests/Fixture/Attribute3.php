@@ -14,7 +14,7 @@ namespace Zenstruck\Tests\Fixture;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-#[\Attribute(\Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_ALL)]
 final class Attribute3
 {
     public function __construct(public string $value)

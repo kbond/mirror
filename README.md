@@ -67,6 +67,9 @@ $class->hasMethod('CONST_NAME'); // bool
 $class->method('CONST_NAME'); // ?MirrorClassConstant
 $class->methodOrFail('CONST_NAME'); // MirrorClassConstant or throws \ReflectionException
 
+// attributes
+$class->attributes(); // Attributes|MirrorAttributes[]
+
 // other methods
 $class->constructor(); // ?MirrorMethod
 $class->isA(Some::class); // bool
@@ -128,6 +131,9 @@ $object->hasMethod('CONST_NAME'); // bool
 $object->method('CONST_NAME'); // ?MirrorClassConstant
 $object->methodOrFail('CONST_NAME'); // MirrorClassConstant or throws \ReflectionException
 
+// attributes
+$object->attributes(); // Attributes|MirrorAttributes[]
+
 // other methods
 $object->object(); // object (wrapped object)
 $object->class(); // MirrorClass
@@ -159,8 +165,8 @@ use Zenstruck\MirrorClass;
 
 /** @var MirrorClass $class */
 
-$classes = $class->parents();
-$classes = $class->interfaces();
+$classes = $class->parents(); // Classes|MirrorClass[]
+$classes = $class->interfaces(); // Classes|MirrorClass[]
 
 foreach ($classes as $c) {
     /** @var MirrorClass $c */
@@ -170,6 +176,13 @@ foreach ($classes as $c) {
 $classes->all(); // MirrorClass[]
 $classes->first(); // ?MirrorClass (first in collection)
 $classes->names(); // string[] (FQCNs of classes in collection)
+$classes->has(Some::class); // bool
+
+// include only classes with this attribute
+$classes = $classes->withAttribute(SomeAttribute::class); // Classes|MirrorClass[]
+
+// include only classes with an instance of this attribute
+$classes = $classes->withAttribute(SomeAttribute::class, instanceOf: true); // Classes|MirrorClass[]
 
 // custom filter
 $classes = $classes->filter(fn(MirrorClass $c) => bool); // Classes|MirrorClass[]
@@ -187,7 +200,7 @@ use Zenstruck\MirrorClass;
 
 /** @var MirrorClass $class */
 
-$traits = $class->traits();
+$traits = $class->traits(); // Traits|MirrorClass[] (includes traits of traits)
 
 foreach ($traits as $t) {
     /** @var MirrorClass $c */
@@ -198,10 +211,16 @@ $traits->all(); // MirrorClass[]
 $traits->first(); // ?MirrorClass (first in collection)
 $traits->names(); // string[] (FQCNs of traits in collection)
 
-// recursively include traits or parents other traits (duplicates excluded)
+// include only traits with this attribute
+$traits = $traits->withAttribute(SomeAttribute::class); // Traits|MirrorClass[]
+
+// include only traits with an instance of this attribute
+$traits = $traits->withAttribute(SomeAttribute::class, instanceOf: true); // Traits|MirrorClass[]
+
+// recursively include traits from parents (duplicates excluded)
 $traits = $traits->recursive(); // Traits|MirrorClass[]
 
-// recursively include traits or parents other traits (duplicates included)
+// recursively include traits from parents (duplicates included)
 $traits = $traits->recursive(includeDuplicates: true); // Traits|MirrorClass[]
 
 // custom filter
@@ -254,6 +273,12 @@ Wraps a `\ReflectionParameter`.
 
 Wraps a `\ReflectionType`.
 
-### `Attributes`
+### `MirrorAttribute`
 
-`Zenstruck\Mirror\Attributes`, a collection of `\ReflectionAttribute`'s.
+#### `Attributes`
+
+`Zenstruck\Mirror\Attributes`, a collection of `MirrorAttribute`'s.
+
+##### Create For
+
+## Dynamic Invokables

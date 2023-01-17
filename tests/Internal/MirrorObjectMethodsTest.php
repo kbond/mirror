@@ -151,6 +151,10 @@ abstract class MirrorObjectMethodsTest extends TestCase
             'staticMethod1',
         ], $methods->recursive()->static()->names());
 
+        $this->assertCount(1, $methods->withAttribute(Attribute1::class));
+        $this->assertCount(2, $methods->withAttribute(Attribute1::class, instanceOf: true));
+        $this->assertCount(3, $methods->recursive()->withAttribute(Attribute1::class, instanceOf: true));
+
         $this->assertNull($mirror->method('invalid'));
         $this->assertSame('staticMethod1', $mirror->methodOrFail('staticMethod1')->name());
         $this->assertFalse($mirror->hasMethod('invalid'));
@@ -225,6 +229,15 @@ abstract class MirrorObjectMethodsTest extends TestCase
             'staticProp1',
         ], $properties->recursive()->static()->names());
 
+        $this->assertSame([
+            'instanceProp5',
+            'instanceProp2',
+        ], $properties->recursive()->instance()->protected()->names());
+
+        $this->assertCount(1, $properties->withAttribute(Attribute1::class));
+        $this->assertCount(2, $properties->withAttribute(Attribute1::class, instanceOf: true));
+        $this->assertCount(3, $properties->recursive()->withAttribute(Attribute1::class, instanceOf: true));
+
         $this->assertNull($mirror->property('invalid'));
         $this->assertSame('staticProp1', $mirror->propertyOrFail('staticProp1')->name());
         $this->assertFalse($mirror->hasProperty('invalid'));
@@ -287,6 +300,10 @@ abstract class MirrorObjectMethodsTest extends TestCase
             'CONST3',
             'CONST2',
         ], $constants->protected()->private()->names());
+
+        $this->assertCount(1, $constants->withAttribute(Attribute1::class));
+        $this->assertCount(2, $constants->withAttribute(Attribute1::class, instanceOf: true));
+        $this->assertCount(3, $constants->recursive()->withAttribute(Attribute1::class, instanceOf: true));
 
         $this->assertNull($mirror->constant('invalid'));
         $this->assertSame('CONST10', $mirror->constantOrFail('CONST10')->name());
@@ -374,7 +391,7 @@ abstract class MirrorObjectMethodsTest extends TestCase
 
         $this->assertCount(4, $attributes);
         $this->assertCount(2, $attributes->of(Attribute1::class));
-        $this->assertCount(3, $attributes->instanceOf(Attribute1::class));
+        $this->assertCount(3, $attributes->of(Attribute1::class, instanceOf: true));
     }
 
     abstract protected function createMirrorFor(object $object): MirrorClass|MirrorObject;

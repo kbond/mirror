@@ -19,7 +19,8 @@ use Zenstruck\MirrorClassConstant;
  *
  * @extends ClassReflectorIterator<MirrorClassConstant>
  *
- * @method MirrorClassConstant[] getIterator()
+ * @method MirrorClassConstant[]    getIterator()
+ * @method MirrorClassConstant|null first()
  */
 final class ClassConstants extends ClassReflectorIterator
 {
