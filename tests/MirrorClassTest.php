@@ -57,12 +57,17 @@ final class MirrorClassTest extends MirrorObjectMethodsTest
         $this->assertInstanceOf(Object6::class, $object);
         $this->assertSame('constructor', $object->prop);
 
-        $object = MirrorClass::for(Object6::class)->instantiate(['foo']);
+        $object = MirrorClass::for(Object6::class)->instantiate(['prop' => 'foo', 'extra' => 'bar']);
 
         $this->assertInstanceOf(Object6::class, $object);
         $this->assertSame('foo', $object->prop);
 
         $this->assertInstanceOf(Object4::class, MirrorClass::for(Object4::class)->instantiate());
+
+        $object = MirrorClass::for(Object6::class)->instantiate(['extra' => 'bar']);
+
+        $this->assertInstanceOf(Object6::class, $object);
+        $this->assertSame('constructor', $object->prop);
     }
 
     /**

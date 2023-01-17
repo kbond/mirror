@@ -38,7 +38,7 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
             return "{$this->reflector->class}::{$this->reflector->name}()";
         }
 
-        return "(function) {$this->reflector->name}()";
+        return "{$this->reflector->name}()";
     }
 
     public static function for(callable $callable): self
@@ -93,7 +93,7 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
     public function normalizeArguments(array|Argument $arguments): array
     {
         if ($arguments instanceof Argument) {
-            return \array_fill(0, \count($this), $arguments);
+            $arguments = \array_fill(0, \count($this), $arguments);
         }
 
         $arguments = $this->normalizeArgumentOrder($arguments);
@@ -106,7 +106,7 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
 
             if (!\array_key_exists($key, $parameters)) {
                 if (!$argument->isOptional()) {
-                    throw new \ArgumentCountError(); // todo
+                    throw new \ArgumentCountError(\sprintf('Missing argument #%d for "%s". Expected type: "%s".', $key, $this, $argument->type()));
                 }
 
                 $arguments[$key] = null;
@@ -116,9 +116,13 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
 
             try {
                 $arguments[$key] = $argument->resolve($parameters[$key]);
-            } catch (UnresolveableArgument) {
-                throw new UnresolveableArgument(); // todo
+            } catch (UnresolveableArgument $e) {
+                throw new UnresolveableArgument(\sprintf('Unable to resolve argument for "%s" (%s).', $parameters[$key], $e->getMessage()), previous: $e);
             }
+        }
+
+        if (\count($arguments) < $this->reflector->getNumberOfRequiredParameters()) {
+            throw new \ArgumentCountError(\sprintf('Too few arguments to "%s". Expected at least %d but got %d.', $this, $this->reflector->getNumberOfRequiredParameters(), \count($arguments)));
         }
 
         return $arguments;

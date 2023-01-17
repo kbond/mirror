@@ -25,7 +25,10 @@ final class ValueFactory
     /** @var callable */
     private $factory;
 
-    public function __construct(private string $type, callable $factory)
+    /**
+     * @param callable():mixed|callable(string[]):mixed|callable(MirrorType):mixed|callable(string):mixed $factory
+     */
+    public function __construct(callable $factory)
     {
         if ($factory instanceof self) {
             throw new \InvalidArgumentException('Cannot nest value factories.');
@@ -37,16 +40,11 @@ final class ValueFactory
     public function __invoke(MirrorType $type): mixed
     {
         return MirrorFunction::for($this->factory)
-            ->invoke(Argument::new(
-                $type,
+            ->invoke(Argument::union(
+                $type->hasType() ? (string) $type : null,
                 $type->types(),
-                (string) $type,
+                $type,
             ))
         ;
-    }
-
-    public function type(): string
-    {
-        return $this->type;
     }
 }
