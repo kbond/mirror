@@ -27,7 +27,7 @@ final class MirrorParameter implements AttributesMirror
 
     public function __toString(): string
     {
-        return \sprintf('$%s (#%s) <%s>', $this->name(), $this->reflector->getPosition(), $this->function());
+        return \sprintf('%s $%s (#%s) <%s>', $this->type(), $this->name(), $this->reflector->getPosition(), $this->function());
     }
 
     public static function for(callable $function, int|string $parameter): self
@@ -104,7 +104,7 @@ final class MirrorParameter implements AttributesMirror
     /**
      * @param int-mask<MirrorType::EXACT,MirrorType::COVARIANCE,MirrorType::CONTRAVARIANCE,MirrorType::STRICT,MirrorType::VERY_STRICT> $mode
      */
-    public function supports(string $type, int $mode = MirrorType::EXACT | MirrorType::COVARIANCE): bool
+    public function supports(string $type, int $mode = MirrorType::DEFAULT): bool
     {
         return $this->type()->supports($type, $mode);
     }

@@ -85,7 +85,7 @@ final class AttributesTest extends TestCase
         yield [new \ReflectionClassConstant(Object1::class, 'CONST1'), 'CONST1', Object1::class.'::CONST1'];
         yield [new \ReflectionMethod(Object1::class, '__construct'), '__construct', Object1::class.'::__construct()'];
         yield [new \ReflectionProperty(Object1::class, 'instanceProp1'), 'instanceProp1', Object1::class.'::$instanceProp1'];
-        yield [new \ReflectionParameter([Object1::class, '__construct'], 'param'), 'param', '$param (#0) <Zenstruck\Tests\Fixture\Object1::__construct()>'];
+        yield [new \ReflectionParameter([Object1::class, '__construct'], 'param'), 'param', 'string $param (#0) <Zenstruck\Tests\Fixture\Object1::__construct()>'];
         yield [Object6::class.'::factory', 'factory', Object6::class.'::factory()'];
         yield [[Object6::class, 'factory'], 'factory', Object6::class.'::factory()'];
         yield [[new Object6(), 'method'], 'method', Object6::class.'::method()'];

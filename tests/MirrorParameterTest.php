@@ -25,9 +25,10 @@ final class MirrorParameterTest extends TestCase
     /**
      * @test
      */
-    public function stringable($param1 = null, $param2 = null): void
+    public function stringable(?int $param1 = null, $param2 = null): void
     {
-        $this->assertSame(\sprintf('$param2 (#1) <%s::%s()>', __CLASS__, __FUNCTION__), (string) MirrorParameter::for([$this, 'stringable'], 'param2'));
+        $this->assertSame(\sprintf('int|null $param1 (#0) <%s::%s()>', __CLASS__, __FUNCTION__), (string) MirrorParameter::for([$this, 'stringable'], 'param1'));
+        $this->assertSame(\sprintf('(none) $param2 (#1) <%s::%s()>', __CLASS__, __FUNCTION__), (string) MirrorParameter::for([$this, 'stringable'], 'param2'));
     }
 
     /**

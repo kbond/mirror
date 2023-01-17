@@ -42,6 +42,8 @@ final class MirrorType
      */
     public const VERY_STRICT = 16;
 
+    public const DEFAULT = self::EXACT | self::COVARIANCE;
+
     private const TYPE_NORMALIZE_MAP = [
         'boolean' => 'bool',
         'integer' => 'int',
@@ -68,7 +70,7 @@ final class MirrorType
 
     public function __toString(): string
     {
-        return \implode($this->reflector instanceof \ReflectionIntersectionType ? '&' : '|', $this->types());
+        return \implode($this->reflector instanceof \ReflectionIntersectionType ? '&' : '|', $this->types()) ?: '(none)';
     }
 
     /**
@@ -78,6 +80,10 @@ final class MirrorType
     {
         if (isset($this->types)) {
             return $this->types;
+        }
+
+        if (!$this->reflector) {
+            return $this->types = [];
         }
 
         $this->types = \array_map(
@@ -144,7 +150,7 @@ final class MirrorType
     /**
      * @param int-mask<self::EXACT,self::COVARIANCE,self::CONTRAVARIANCE,self::STRICT,self::VERY_STRICT> $mode
      */
-    public function supports(string $type, int $mode = self::EXACT | self::COVARIANCE): bool
+    public function supports(string $type, int $mode = self::DEFAULT): bool
     {
         if (!$this->reflector) {
             // no type-hint so any type is supported
@@ -214,7 +220,7 @@ final class MirrorType
 
         $type = \get_debug_type($value);
 
-        if (!$this->supports($type, $strict ? self::EXACT | self::COVARIANCE | self::STRICT : self::EXACT | self::COVARIANCE)) {
+        if (!$this->supports($type, $strict ? self::DEFAULT | self::STRICT : self::DEFAULT)) {
             return false;
         }
 

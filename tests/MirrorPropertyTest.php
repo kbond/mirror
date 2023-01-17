@@ -51,7 +51,7 @@ final class MirrorPropertyTest extends TestCase
         $this->assertFalse($instance->isPublic());
         $this->assertFalse($instance->isProtected());
         $this->assertTrue($instance->isPrivate());
-        $this->assertSame(['mixed'], $instance->type()->types());
+        $this->assertSame([], $instance->type()->types());
         $this->assertTrue($instance->supports('string'));
         $this->assertTrue($instance->accepts('string'));
         $this->assertFalse($instance->hasType());

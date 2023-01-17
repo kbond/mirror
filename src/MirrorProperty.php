@@ -114,7 +114,7 @@ final class MirrorProperty implements AttributesMirror
     /**
      * @param int-mask<MirrorType::EXACT,MirrorType::COVARIANCE,MirrorType::CONTRAVARIANCE,MirrorType::STRICT,MirrorType::VERY_STRICT> $mode
      */
-    public function supports(string $type, int $mode = MirrorType::EXACT | MirrorType::COVARIANCE): bool
+    public function supports(string $type, int $mode = MirrorType::DEFAULT): bool
     {
         return $this->type()->supports($type, $mode);
     }

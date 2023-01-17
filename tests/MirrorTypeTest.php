@@ -33,7 +33,7 @@ final class MirrorTypeTest extends TestCase
      */
     public function stringable(): void
     {
-        $this->assertSame('mixed', (string) MirrorFunction::for(fn() => null)->returnType());
+        $this->assertSame('(none)', (string) MirrorFunction::for(fn() => null)->returnType());
         $this->assertSame('mixed', (string) MirrorFunction::for(fn(): mixed => null)->returnType());
         $this->assertSame('int', (string) MirrorFunction::for(fn(): int => null)->returnType());
         $this->assertSame('int|null', (string) MirrorFunction::for(fn(): ?int => null)->returnType());
@@ -81,7 +81,7 @@ final class MirrorTypeTest extends TestCase
     {
         $type = MirrorFunction::for(fn() => null)->returnType();
 
-        $this->assertSame(['mixed'], $type->types());
+        $this->assertSame([], $type->types());
         $this->assertFalse($type->hasType());
         $this->assertFalse($type->isNamed());
         $this->assertFalse($type->isUnion());
@@ -185,6 +185,7 @@ final class MirrorTypeTest extends TestCase
         $this->assertTrue($fn1->parameters()->get(5)->supports('string'));
         $this->assertFalse($fn1->parameters()->get(5)->supports('string', MirrorType::STRICT));
 
+        $this->assertFalse($fn2->parameters()->get(0)->supports(Object1::class));
         $this->assertTrue($fn2->parameters()->get(0)->supports(Object1::class, MirrorType::COVARIANCE | MirrorType::CONTRAVARIANCE));
         $this->assertFalse($fn2->parameters()->get(0)->supports(Object3::class, MirrorType::COVARIANCE | MirrorType::CONTRAVARIANCE));
     }
