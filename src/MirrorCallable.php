@@ -41,6 +41,11 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
         return "{$this->reflector->name}()";
     }
 
+    /**
+     * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
+     */
+    abstract public function __invoke(array|Argument $arguments = []): mixed;
+
     public static function for(callable $callable): self
     {
         if (\is_string($callable) && \str_contains($callable, '::')) {
@@ -62,6 +67,11 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
     {
         return $callable instanceof \Closure ? $callable : \Closure::fromCallable($callable);
     }
+
+    /**
+     * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
+     */
+    abstract public function invoke(array|Argument $arguments = []): mixed;
 
     public function name(): string
     {

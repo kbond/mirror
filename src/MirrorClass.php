@@ -88,6 +88,11 @@ final class MirrorClass implements AttributesMirror
         return $this->reflector->isAbstract();
     }
 
+    public function isConcrete(): bool
+    {
+        return \class_exists($this->name()) && !$this->isAbstract();
+    }
+
     /**
      * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
      *
