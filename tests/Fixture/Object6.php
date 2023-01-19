@@ -18,7 +18,7 @@ class Object6
 {
     public string $prop = 'original';
 
-    public function __construct(string $prop = 'constructor')
+    public function __construct(string $prop = 'constructor', public ?string $anotherProp = null)
     {
         $this->prop = $prop;
     }
@@ -39,9 +39,9 @@ class Object6
     #[Attribute1('second')]
     #[Attribute1('third')]
     #[Attribute3('fourth')]
-    public static function factory(string $prop = 'factory'): self
+    public static function factory(string $prop = 'factory', ?string $anotherProp = null): self
     {
-        return new self($prop);
+        return new self($prop, $anotherProp);
     }
 
     public static function closureSelf(): \Closure

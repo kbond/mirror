@@ -152,11 +152,19 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
         $args = [];
 
         foreach ($this->reflector->getParameters() as $parameter) {
-            if (!isset($arguments[$parameter->name])) {
+            if (isset($arguments[$parameter->name])) {
+                $args[] = $arguments[$parameter->name];
+
                 continue;
             }
 
-            $args[] = $arguments[$parameter->name];
+            if ($parameter->isDefaultValueAvailable()) {
+                $args[] = $parameter->getDefaultValue();
+
+                continue;
+            }
+
+            throw new \ArgumentCountError(\sprintf('Expected at least %d arguments for %s. Got %d.', $this->reflector->getNumberOfRequiredParameters(), $this, \count($args)));
         }
 
         return $args;

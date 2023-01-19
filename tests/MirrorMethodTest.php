@@ -41,7 +41,7 @@ final class MirrorMethodTest extends TestCase
         $this->assertTrue(MirrorMethod::for(Object6::class, '__destruct')->isDestructor());
         $this->assertFalse(MirrorMethod::for(Object6::class, '__destruct')->isConstructor());
         $this->assertCount(0, MirrorMethod::for(Object6::class, '__destruct'));
-        $this->assertCount(1, MirrorMethod::for(Object6::class, '__construct'));
+        $this->assertCount(2, MirrorMethod::for(Object6::class, '__construct'));
 
         $this->assertSame('staticMethod', MirrorMethod::for(new Object4(), 'staticMethod')->reflector()->name);
 
