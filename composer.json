@@ -19,7 +19,11 @@
         "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "^9.5.0",
         "symfony/phpunit-bridge": "^6.1",
+        "symfony/property-access": "^5.4|^6.0",
         "symfony/var-dumper": "^5.4|^6.0"
+    },
+    "suggest": {
+        "symfony/property-access": "To use the PropertyAccessHydrator"
     },
     "config": {
         "preferred-install": "dist",

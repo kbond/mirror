@@ -36,7 +36,7 @@ final class Instantiator
      * @template T of object
      *
      * @param class-string<T>             $class
-     * @param mixed[]|array<string,mixed> $arguments
+     * @param mixed[]|array<string,mixed> $arguments Keys are unset if they're used
      *
      * @return T
      *

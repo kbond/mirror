@@ -44,6 +44,16 @@ final class MirrorObject implements AttributesMirror
         return new self($object);
     }
 
+    /**
+     * @param T|self<T> $object
+     *
+     * @return self<T>
+     */
+    public static function wrap(object $object): self
+    {
+        return $object instanceof self ? $object : new self($object); // @phpstan-ignore-line
+    }
+
     public function reflector(): \ReflectionObject
     {
         return $this->reflector;

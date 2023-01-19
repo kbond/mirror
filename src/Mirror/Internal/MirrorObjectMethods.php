@@ -141,7 +141,7 @@ trait MirrorObjectMethods
             }
         }
 
-        throw new \ReflectionException(); // todo
+        throw new \ReflectionException(\sprintf('Property "%s" does not exist on "%s" or its parents.', $name, $this));
     }
 
     public function hasProperty(string $name): bool
