@@ -178,6 +178,10 @@ final class MirrorType
                 return true;
             }
 
+            if ('object' === $supportedType && (\class_exists($type) || \interface_exists($type))) {
+                return true;
+            }
+
             if ($mode & self::COVARIANCE && \is_a($type, $supportedType, true)) {
                 return true;
             }
