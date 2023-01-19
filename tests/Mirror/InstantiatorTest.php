@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the zenstruck/mirror package.
  *
@@ -47,6 +49,17 @@ final class InstantiatorTest extends TestCase
     /**
      * @test
      */
+    public function instantiate_with_constructor_args_with_type_coercion(): void
+    {
+        $arguments = ['prop' => 6.2, 'extra' => 'foo'];
+
+        $this->assertSame('6.2', Instantiator::withConstructor()(Object6::class, $arguments)->prop);
+        $this->assertSame(['extra' => 'foo'], $arguments);
+    }
+
+    /**
+     * @test
+     */
     public function instantiate_without_constructor(): void
     {
         $this->assertSame('original', Instantiator::withoutConstructor()(Object6::class)->prop);
@@ -74,6 +87,17 @@ final class InstantiatorTest extends TestCase
     /**
      * @test
      */
+    public function instantiate_with_static_method_args_with_type_coercion(): void
+    {
+        $arguments = ['prop' => 6.2, 'extra' => 'foo'];
+
+        $this->assertSame('6.2', Instantiator::with('factory')(Object6::class, $arguments)->prop);
+        $this->assertSame(['extra' => 'foo'], $arguments);
+    }
+
+    /**
+     * @test
+     */
     public function instantiate_with_callable(): void
     {
         $this->assertSame('closure', Instantiator::with(fn() => new Object6('closure'))(Object6::class)->prop);
@@ -87,6 +111,19 @@ final class InstantiatorTest extends TestCase
         $arguments = ['prop' => 'value', 'extra' => 'foo'];
 
         $this->assertSame('value', Instantiator::with(fn($prop) => new Object6($prop))(Object6::class, $arguments)->prop);
+        $this->assertSame(['extra' => 'foo'], $arguments);
+    }
+
+    /**
+     * @test
+     */
+    public function instantiate_with_callable_args_type_coercion(): void
+    {
+        $arguments = ['prop' => 6, 'extra' => 'foo'];
+
+        $this->expectException(\TypeError::class); // todo?
+
+        $this->assertSame('6', Instantiator::with(fn($prop) => new Object6($prop))(Object6::class, $arguments)->prop);
         $this->assertSame(['extra' => 'foo'], $arguments);
     }
 
