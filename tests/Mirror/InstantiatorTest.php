@@ -40,10 +40,7 @@ final class InstantiatorTest extends TestCase
      */
     public function instantiate_with_constructor_args(): void
     {
-        $arguments = ['prop' => 'value', 'extra' => 'foo'];
-
-        $this->assertSame('value', Instantiator::withConstructor()(Object6::class, $arguments)->prop);
-        $this->assertSame(['extra' => 'foo'], $arguments);
+        $this->assertSame('value', Instantiator::withConstructor()(Object6::class, ['prop' => 'value'])->prop);
     }
 
     /**
@@ -51,10 +48,7 @@ final class InstantiatorTest extends TestCase
      */
     public function instantiate_with_constructor_args_with_type_coercion(): void
     {
-        $arguments = ['prop' => 6.2, 'extra' => 'foo'];
-
-        $this->assertSame('6.2', Instantiator::withConstructor()(Object6::class, $arguments)->prop);
-        $this->assertSame(['extra' => 'foo'], $arguments);
+        $this->assertSame('6.2', Instantiator::withConstructor()(Object6::class, ['prop' => 6.2])->prop);
     }
 
     /**
@@ -78,10 +72,7 @@ final class InstantiatorTest extends TestCase
      */
     public function instantiate_with_static_method_args(): void
     {
-        $arguments = ['prop' => 'value', 'extra' => 'foo'];
-
-        $this->assertSame('value', Instantiator::with('factory')(Object6::class, $arguments)->prop);
-        $this->assertSame(['extra' => 'foo'], $arguments);
+        $this->assertSame('value', Instantiator::with('factory')(Object6::class, ['prop' => 'value'])->prop);
     }
 
     /**
@@ -89,10 +80,7 @@ final class InstantiatorTest extends TestCase
      */
     public function instantiate_with_static_method_args_with_type_coercion(): void
     {
-        $arguments = ['prop' => 6.2, 'extra' => 'foo'];
-
-        $this->assertSame('6.2', Instantiator::with('factory')(Object6::class, $arguments)->prop);
-        $this->assertSame(['extra' => 'foo'], $arguments);
+        $this->assertSame('6.2', Instantiator::with('factory')(Object6::class, ['prop' => 6.2])->prop);
     }
 
     /**
@@ -108,10 +96,7 @@ final class InstantiatorTest extends TestCase
      */
     public function instantiate_with_callable_args(): void
     {
-        $arguments = ['prop' => 'value', 'extra' => 'foo'];
-
-        $this->assertSame('value', Instantiator::with(fn($prop) => new Object6($prop))(Object6::class, $arguments)->prop);
-        $this->assertSame(['extra' => 'foo'], $arguments);
+        $this->assertSame('value', Instantiator::with(fn($prop) => new Object6($prop))(Object6::class, ['prop' => 'value'])->prop);
     }
 
     /**
@@ -119,10 +104,7 @@ final class InstantiatorTest extends TestCase
      */
     public function instantiate_with_callable_args_type_coercion(): void
     {
-        $arguments = ['prop' => 6, 'extra' => 'foo'];
-
-        $this->assertSame('6', Instantiator::with(fn($prop) => new Object6((string) $prop))(Object6::class, $arguments)->prop);
-        $this->assertSame(['extra' => 'foo'], $arguments);
+        $this->assertSame('6', Instantiator::with(fn($prop) => new Object6((string) $prop))(Object6::class, ['prop' => 6])->prop);
     }
 
     /**

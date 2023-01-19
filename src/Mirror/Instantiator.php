@@ -36,13 +36,13 @@ final class Instantiator
      * @template T of object
      *
      * @param class-string<T>             $class
-     * @param mixed[]|array<string,mixed> $arguments Keys are unset if they're used
+     * @param mixed[]|array<string,mixed> $arguments
      *
      * @return T
      *
      * @throws FailedToInstantiate
      */
-    public function __invoke(string $class, array &$arguments = []): object
+    public function __invoke(string $class, array $arguments = []): object
     {
         /** @var MirrorClass<T> $mirror */
         $mirror = MirrorClass::for($class);
@@ -60,8 +60,6 @@ final class Instantiator
         if (!$object instanceof $class) {
             throw new FailedToInstantiate(\sprintf('Expected to instantiate "%s", got "%s".', $class, \get_debug_type($object)));
         }
-
-        $arguments = \array_diff_key($arguments, \array_flip($instantiator->parameters()->names()));
 
         return $object;
     }
