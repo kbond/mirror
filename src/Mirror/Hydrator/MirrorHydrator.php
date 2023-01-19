@@ -11,8 +11,11 @@
 
 namespace Zenstruck\Mirror\Hydrator;
 
-use Zenstruck\Mirror\Exception\FailedToHydrateValue;
+use Zenstruck\Mirror\Exception\FailedToTransformType;
+use Zenstruck\Mirror\Exception\NoSuchProperty;
+use Zenstruck\Mirror\Exception\TypeMismatch;
 use Zenstruck\Mirror\Hydrator;
+use Zenstruck\Mirror\Hydrator\Transformer\ChainTypeTransformer;
 use Zenstruck\MirrorObject;
 
 /**
@@ -20,6 +23,14 @@ use Zenstruck\MirrorObject;
  */
 final class MirrorHydrator implements Hydrator
 {
+    private static TypeTransformer $defaultTransformer;
+    private TypeTransformer $typeTransformer;
+
+    public function __construct(?TypeTransformer $typeTransformer = null)
+    {
+        $this->typeTransformer = $typeTransformer ?? self::defaultTransformer();
+    }
+
     public function __invoke(object $object, array $values = []): object
     {
         $mirror = MirrorObject::for($object);
@@ -37,9 +48,22 @@ final class MirrorHydrator implements Hydrator
 
         try {
             $object->set($name, $value);
-        } catch (\ReflectionException|\TypeError $e) {
-            // todo type coercion system on type error
-            throw new FailedToHydrateValue($e->getMessage(), previous: $e);
+
+            return;
+        } catch (\ReflectionException $e) {
+            throw new NoSuchProperty($e->getMessage(), previous: $e);
+        } catch (\TypeError) {
         }
+
+        try {
+            $this->set($object, $name, $this->typeTransformer->transform($object->propertyOrFail($name)->type(), $value));
+        } catch (FailedToTransformType $e) {
+            throw new TypeMismatch($e->getMessage(), previous: $e);
+        }
+    }
+
+    private static function defaultTransformer(): TypeTransformer
+    {
+        return self::$defaultTransformer ??= new ChainTypeTransformer();
     }
 }

@@ -16,6 +16,7 @@
         "symfony/polyfill-php81": "^1.27"
     },
     "require-dev": {
+        "doctrine/collections": "^1.8",
         "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "^9.5.0",
         "symfony/phpunit-bridge": "^6.1",

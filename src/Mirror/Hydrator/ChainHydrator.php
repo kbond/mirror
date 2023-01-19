@@ -38,17 +38,15 @@ final class ChainHydrator implements Hydrator
     public function set(object $object, string $name, mixed $value): void
     {
         foreach ($this->hydrators as $hydrator) {
-            unset($e);
-
             try {
                 $hydrator->set($object, $name, $value);
+
+                return;
             } catch (FailedToHydrateValue $e) {
                 continue;
             }
         }
 
-        if (isset($e)) {
-            throw $e;
-        }
+        throw $e ?? new FailedToHydrateValue(\sprintf('No hydrator able to hydrate %s::$%s with "%s".', $object::class, $name, \get_debug_type($value)));
     }
 }

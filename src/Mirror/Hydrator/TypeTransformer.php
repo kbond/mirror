@@ -9,11 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Zenstruck\Mirror\Exception;
+namespace Zenstruck\Mirror\Hydrator;
+
+use Zenstruck\Mirror\Exception\FailedToTransformType;
+use Zenstruck\MirrorType;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class FailedToHydrateValue extends \RuntimeException
+interface TypeTransformer
 {
+    /**
+     * @throws FailedToTransformType
+     */
+    public function transform(MirrorType $type, mixed $value): mixed;
 }

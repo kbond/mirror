@@ -14,6 +14,6 @@ namespace Zenstruck\Mirror\Exception;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class FailedToHydrateValue extends \RuntimeException
+final class TypeMismatch extends FailedToHydrateValue
 {
 }

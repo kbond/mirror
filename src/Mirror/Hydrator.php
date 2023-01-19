@@ -30,5 +30,8 @@ interface Hydrator
      */
     public function __invoke(object $object, array $values = []): object;
 
+    /**
+     * @throws FailedToHydrateValue if unable to find or set property
+     */
     public function set(object $object, string $name, mixed $value): void;
 }

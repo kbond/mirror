@@ -12,9 +12,11 @@
 namespace Zenstruck\Mirror\Hydrator;
 
 use Symfony\Component\PropertyAccess\Exception\AccessException;
+use Symfony\Component\PropertyAccess\Exception\InvalidArgumentException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Zenstruck\Mirror\Exception\FailedToHydrateValue;
+use Zenstruck\Mirror\Exception\NoSuchProperty;
+use Zenstruck\Mirror\Exception\TypeMismatch;
 use Zenstruck\Mirror\Hydrator;
 
 /**
@@ -47,7 +49,9 @@ final class PropertyAccessHydrator implements Hydrator
         try {
             $this->accessor->setValue($object, $name, $value);
         } catch (AccessException $e) {
-            throw new FailedToHydrateValue($e->getMessage(), previous: $e);
+            throw new NoSuchProperty($e->getMessage(), previous: $e);
+        } catch (InvalidArgumentException $e) {
+            throw new TypeMismatch($e->getMessage(), previous: $e);
         }
     }
 }

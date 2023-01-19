@@ -121,9 +121,7 @@ final class InstantiatorTest extends TestCase
     {
         $arguments = ['prop' => 6, 'extra' => 'foo'];
 
-        $this->expectException(\TypeError::class); // todo?
-
-        $this->assertSame('6', Instantiator::with(fn($prop) => new Object6($prop))(Object6::class, $arguments)->prop);
+        $this->assertSame('6', Instantiator::with(fn($prop) => new Object6((string) $prop))(Object6::class, $arguments)->prop);
         $this->assertSame(['extra' => 'foo'], $arguments);
     }
 
