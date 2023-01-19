@@ -186,6 +186,10 @@ final class MirrorType
                 return true;
             }
 
+            if ('iterable' === $supportedType && ('array' === $type || \is_a($type, \Traversable::class, true))) {
+                return true;
+            }
+
             if ($mode & self::VERY_STRICT) {
                 continue;
             }

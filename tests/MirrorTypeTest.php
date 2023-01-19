@@ -130,7 +130,7 @@ final class MirrorTypeTest extends TestCase
      */
     public function supports(): void
     {
-        $fn1 = MirrorFunction::for(fn(?Object1 $object, string $string, int $int, $noType, float $float, bool $bool) => null);
+        $fn1 = MirrorFunction::for(fn(?Object1 $object, string $string, int $int, $noType, float $float, bool $bool, iterable $iterable, array $array) => null);
         $fn2 = MirrorFunction::for(fn(Object2 $object, string $string, $noType) => null);
 
         $this->assertTrue($fn1->parameters()->get(0)->supports(Object1::class));
@@ -185,6 +185,16 @@ final class MirrorTypeTest extends TestCase
         $this->assertTrue($fn1->parameters()->get(5)->supports('string'));
         $this->assertFalse($fn1->parameters()->get(5)->supports('string', MirrorType::STRICT));
 
+        $this->assertTrue($fn1->parameters()->get(6)->supports('array'));
+        $this->assertTrue($fn1->parameters()->get(6)->supports('iterable'));
+        $this->assertTrue($fn1->parameters()->get(6)->supports(\ArrayIterator::class));
+        $this->assertTrue($fn1->parameters()->get(6)->supports('array', mode: MirrorType::VERY_STRICT));
+        $this->assertTrue($fn1->parameters()->get(6)->supports('iterable', mode: MirrorType::VERY_STRICT));
+        $this->assertTrue($fn1->parameters()->get(6)->supports(\ArrayIterator::class, mode: MirrorType::VERY_STRICT));
+
+        $this->assertTrue($fn1->parameters()->get(7)->supports('array'));
+        $this->assertFalse($fn1->parameters()->get(7)->supports('iterable'));
+
         $this->assertFalse($fn2->parameters()->get(0)->supports(Object1::class));
         $this->assertTrue($fn2->parameters()->get(0)->supports(Object1::class, MirrorType::COVARIANCE | MirrorType::CONTRAVARIANCE));
         $this->assertFalse($fn2->parameters()->get(0)->supports(Object3::class, MirrorType::COVARIANCE | MirrorType::CONTRAVARIANCE));
@@ -195,7 +205,7 @@ final class MirrorTypeTest extends TestCase
      */
     public function argument_allows(): void
     {
-        $fn1 = MirrorFunction::for(function(Object1 $object, string $string, int $int, $noType, float $float) {});
+        $fn1 = MirrorFunction::for(function(Object1 $object, string $string, int $int, $noType, float $float, iterable $iterable, array $array) {});
         $fn2 = MirrorFunction::for(function(Object2 $object, string $string, $noType) {});
 
         $this->assertTrue($fn1->parameters()->get(0)->accepts(new Object1()));
@@ -224,6 +234,14 @@ final class MirrorTypeTest extends TestCase
         $this->assertTrue($fn1->parameters()->get(4)->accepts('17.3'));
         $this->assertTrue($fn1->parameters()->get(4)->accepts(18.0));
         $this->assertFalse($fn1->parameters()->get(4)->accepts('string'), 'non-numeric strings are not allowed');
+
+        $this->assertTrue($fn1->parameters()->get(5)->accepts(['array']));
+        $this->assertTrue($fn1->parameters()->get(5)->accepts(new \ArrayIterator()));
+        $this->assertTrue($fn1->parameters()->get(5)->accepts(['array'], strict: true));
+        $this->assertTrue($fn1->parameters()->get(5)->accepts(new \ArrayIterator(), strict: true));
+
+        $this->assertTrue($fn1->parameters()->get(6)->accepts(['array']));
+        $this->assertFalse($fn1->parameters()->get(6)->accepts(new \ArrayIterator()));
 
         $this->assertFalse($fn2->parameters()->get(0)->accepts(new Object1()));
         $this->assertFalse($fn2->parameters()->get(0)->accepts(new Object3()));
