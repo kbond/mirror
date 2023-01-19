@@ -15,7 +15,8 @@ use Zenstruck\Mirror\Exception\FailedToTransformType;
 use Zenstruck\Mirror\Exception\NoSuchProperty;
 use Zenstruck\Mirror\Exception\TypeMismatch;
 use Zenstruck\Mirror\Hydrator;
-use Zenstruck\Mirror\Hydrator\Transformer\ChainTypeTransformer;
+use Zenstruck\Mirror\TypeTransformer;
+use Zenstruck\Mirror\TypeTransformer\ChainTypeTransformer;
 use Zenstruck\MirrorObject;
 
 /**

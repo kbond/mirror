@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Zenstruck\Mirror\Hydrator\Transformer;
+namespace Zenstruck\Mirror\TypeTransformer;
 
 use Zenstruck\Mirror\Exception\FailedToTransformType;
-use Zenstruck\Mirror\Hydrator\TypeTransformer;
+use Zenstruck\Mirror\TypeTransformer;
 use Zenstruck\MirrorType;
 
 /**

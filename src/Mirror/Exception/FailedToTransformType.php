@@ -14,6 +14,6 @@ namespace Zenstruck\Mirror\Exception;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-final class FailedToTransformType extends FailedToHydrateValue
+final class FailedToTransformType extends \RuntimeException
 {
 }

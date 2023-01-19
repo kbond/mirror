@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Zenstruck\Mirror\Hydrator\Transformer;
+namespace Zenstruck\Mirror\TypeTransformer;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Zenstruck\Mirror\Exception\FailedToTransformType;
-use Zenstruck\Mirror\Hydrator\TypeTransformer;
+use Zenstruck\Mirror\TypeTransformer;
 use Zenstruck\MirrorType;
 
 /**

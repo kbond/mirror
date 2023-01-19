@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Zenstruck\Mirror\Hydrator;
+namespace Zenstruck\Mirror;
 
 use Zenstruck\Mirror\Exception\FailedToTransformType;
 use Zenstruck\MirrorType;
