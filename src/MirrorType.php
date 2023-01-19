@@ -182,6 +182,10 @@ final class MirrorType
                 return true;
             }
 
+            if ('callable' === $supportedType && (\function_exists($type) || \is_a($type, \Closure::class, true) || (\class_exists($type) && \method_exists($type, '__invoke')))) {
+                return true;
+            }
+
             if ($mode & self::COVARIANCE && \is_a($type, $supportedType, true)) {
                 return true;
             }
@@ -227,6 +231,10 @@ final class MirrorType
         }
 
         $type = \get_debug_type($value);
+
+        if (\is_array($value) && \is_callable($value)) {
+            $type = 'callable';
+        }
 
         if (!$this->supports($type, $strict ? self::DEFAULT | self::STRICT : self::DEFAULT)) {
             return false;
