@@ -113,7 +113,7 @@ trait MirrorObjectMethods
 
     public function properties(): Properties
     {
-        return new Properties($this->reflector);
+        return new Properties($this->reflector, $this->object ?? null);
     }
 
     /**
@@ -135,7 +135,7 @@ trait MirrorObjectMethods
     {
         foreach ($this->reflectorHierarchy() as $class) {
             try {
-                return MirrorProperty::wrap($class->getProperty($name)); // @phpstan-ignore-line
+                return new MirrorProperty($class->getProperty($name), $this->object ?? null); // @phpstan-ignore-line
             } catch (\ReflectionException) {
                 continue;
             }
@@ -157,7 +157,7 @@ trait MirrorObjectMethods
 
     public function methods(): Methods
     {
-        return new Methods($this->reflector);
+        return new Methods($this->reflector, $this->object ?? null);
     }
 
     /**
@@ -177,7 +177,7 @@ trait MirrorObjectMethods
      */
     public function methodOrFail(string $name): MirrorMethod
     {
-        return MirrorMethod::wrap($this->reflector->getMethod($name)); // @phpstan-ignore-line
+        return new MirrorMethod($this->reflector->getMethod($name), $this->object ?? null); // @phpstan-ignore-line
     }
 
     public function hasMethod(string $name): bool
@@ -190,7 +190,7 @@ trait MirrorObjectMethods
      */
     public function call(string $method, array|Argument $arguments = []): mixed
     {
-        return $this->methodOrFail($method)->invoke($arguments, $this->object ?? null);
+        return $this->methodOrFail($method)->invoke($arguments);
     }
 
     /**

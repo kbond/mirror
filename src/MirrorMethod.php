@@ -23,7 +23,10 @@ final class MirrorMethod extends MirrorCallable
 {
     use VisibilityMethods;
 
-    public function __construct(private \ReflectionMethod $reflector)
+    /**
+     * @param T|null $object
+     */
+    public function __construct(private \ReflectionMethod $reflector, private ?object $object = null)
     {
         $this->reflector->setAccessible(true);
 
@@ -69,6 +72,8 @@ final class MirrorMethod extends MirrorCallable
      */
     public function invoke(array|Argument $arguments = [], ?object $object = null): mixed
     {
+        $object ??= $this->object;
+
         if (!$object && $this->isInstance()) {
             throw new \ReflectionException(); // todo
         }

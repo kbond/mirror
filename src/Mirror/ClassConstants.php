@@ -43,7 +43,7 @@ final class ClassConstants extends ClassReflectorIterator
      */
     public function values(): array
     {
-        return $this->map(fn(MirrorClassConstant $c) => $c->value(), true);
+        return $this->map(fn(MirrorClassConstant $c) => $c->value(), namesAsKeys: true);
     }
 
     /**

@@ -28,6 +28,11 @@ final class Properties extends ClassReflectorIterator
     protected const PROTECTED = \ReflectionProperty::IS_PROTECTED;
     protected const PRIVATE = \ReflectionProperty::IS_PRIVATE;
 
+    public function __construct(\ReflectionClass $class, private ?object $object)
+    {
+        parent::__construct($class);
+    }
+
     public function static(): self
     {
         return $this->filter(static fn(MirrorProperty $p) => $p->isStatic());
@@ -49,12 +54,20 @@ final class Properties extends ClassReflectorIterator
     }
 
     /**
+     * @return array<string,mixed>
+     */
+    public function values(?object $object = null): array
+    {
+        return $this->map(fn(MirrorProperty $p) => $p->get($object), namesAsKeys: true);
+    }
+
+    /**
      * @return MirrorProperty<object>[]
      */
     protected function allForClass(\ReflectionClass $class): array
     {
         return \array_map(
-            static fn(\ReflectionProperty $m) => new MirrorProperty($m),
+            fn(\ReflectionProperty $m) => new MirrorProperty($m, $this->object),
             $class->getProperties(...$this->flags())
         );
     }

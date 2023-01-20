@@ -91,12 +91,12 @@ final class MirrorObject implements AttributesMirror
 
     public function get(string $property): mixed
     {
-        return $this->propertyOrFail($property)->get($this->object);
+        return $this->propertyOrFail($property)->get();
     }
 
     public function set(string $property, mixed $value): void
     {
-        $this->propertyOrFail($property)->set($value, $this->object);
+        $this->propertyOrFail($property)->set($value);
     }
 
     public function isInitialized(string $property): bool

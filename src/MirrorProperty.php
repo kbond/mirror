@@ -24,7 +24,10 @@ final class MirrorProperty implements AttributesMirror
 {
     use HasAttributes, VisibilityMethods;
 
-    public function __construct(private \ReflectionProperty $reflector)
+    /**
+     * @param T|null $object
+     */
+    public function __construct(private \ReflectionProperty $reflector, private ?object $object = null)
     {
         $this->reflector->setAccessible(true);
     }
@@ -129,7 +132,7 @@ final class MirrorProperty implements AttributesMirror
      */
     public function get(?object $object = null): mixed
     {
-        return $this->reflector->getValue($object);
+        return $this->reflector->getValue($object ?? $this->object);
     }
 
     /**
@@ -137,6 +140,7 @@ final class MirrorProperty implements AttributesMirror
      */
     public function set(mixed $value, ?object $object = null): void
     {
+        $object ??= $this->object;
         $object ? $this->reflector->setValue($object, $value) : $this->reflector->setValue($value);
     }
 

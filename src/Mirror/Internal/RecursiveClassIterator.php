@@ -27,7 +27,7 @@ abstract class RecursiveClassIterator extends AttributesMirrorIterator
     /**
      * @param \ReflectionClass<object> $class
      */
-    final public function __construct(private \ReflectionClass $class)
+    public function __construct(private \ReflectionClass $class)
     {
     }
 

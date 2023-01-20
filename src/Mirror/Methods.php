@@ -28,6 +28,11 @@ final class Methods extends ClassReflectorIterator
     protected const PROTECTED = \ReflectionMethod::IS_PROTECTED;
     protected const PRIVATE = \ReflectionMethod::IS_PRIVATE;
 
+    public function __construct(\ReflectionClass $class, private ?object $object)
+    {
+        parent::__construct($class);
+    }
+
     public function static(): self
     {
         return $this->filter(static fn(MirrorMethod $p) => $p->isStatic());
@@ -64,7 +69,7 @@ final class Methods extends ClassReflectorIterator
     protected function allForClass(\ReflectionClass $class): array
     {
         return \array_map(
-            static fn(\ReflectionMethod $m) => new MirrorMethod($m),
+            fn(\ReflectionMethod $m) => new MirrorMethod($m, $this->object),
             $class->getMethods(...$this->flags())
         );
     }
