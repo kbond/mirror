@@ -318,6 +318,14 @@ trait MirrorObjectMethods
     }
 
     /**
+     * @param class-string $trait
+     */
+    public function uses(string $trait): bool
+    {
+        return $this->traits()->recursive()->has($trait);
+    }
+
+    /**
      * @return Traits|MirrorClass<object>[]
      */
     public function traits(): Traits

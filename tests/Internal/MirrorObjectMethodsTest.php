@@ -28,6 +28,7 @@ use Zenstruck\Tests\Fixture\Trait2;
 use Zenstruck\Tests\Fixture\Trait3;
 use Zenstruck\Tests\Fixture\Trait4;
 use Zenstruck\Tests\Fixture\Trait5;
+use Zenstruck\Tests\Fixture\Trait6;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -337,7 +338,8 @@ abstract class MirrorObjectMethodsTest extends TestCase
      */
     public function get_traits(): void
     {
-        $traits = $this->createMirrorFor(new Object2())->traits();
+        $mirror = $this->createMirrorFor(new Object2());
+        $traits = $mirror->traits();
 
         $this->assertSame([Trait1::class, Trait3::class], $traits->names());
         $this->assertSame([Trait1::class, Trait3::class, Trait2::class, Trait4::class, Trait5::class], $traits->recursive()->names());
@@ -345,6 +347,14 @@ abstract class MirrorObjectMethodsTest extends TestCase
             [Trait2::class, Trait1::class, Trait4::class, Trait5::class],
             $this->createMirrorFor(new Object1())->traits()->names()
         );
+
+        $this->assertTrue($mirror->uses(Trait1::class));
+        $this->assertTrue($mirror->uses(Trait2::class));
+        $this->assertTrue($mirror->uses(Trait3::class));
+        $this->assertTrue($mirror->uses(Trait4::class));
+        $this->assertTrue($mirror->uses(Trait5::class));
+        $this->assertFalse($mirror->uses(Trait6::class));
+        $this->assertFalse($mirror->uses(Interface1::class));
     }
 
     /**
