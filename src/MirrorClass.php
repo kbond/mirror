@@ -116,29 +116,16 @@ final class MirrorClass implements AttributesMirror
     }
 
     /**
-     * @param callable():T|string                             $callable
+     * @param string                                          $method    Must be public static method on this class
      * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
      *
      * @return T
      */
-    public function instantiateWith(callable|string $callable, array|Argument $arguments = []): object
+    public function instantiateWith(string $method, array|Argument $arguments = []): object
     {
-        if (\is_string($callable) && !\is_callable($callable)) {
-            // is method on this object
-            $callable = [$this->reflector->name, $callable];
-        }
+        $object = $this->call($method, $arguments);
 
-        if (!\is_callable($callable)) {
-            throw new \ReflectionException(); // todo
-        }
-
-        $object = MirrorFunction::for($callable)($arguments);
-
-        if (!$object instanceof $this->reflector->name) {
-            throw new \ReflectionException(); // todo
-        }
-
-        return $object;
+        return $object instanceof $this->reflector->name ? $object : throw new \ReflectionException(); // todo
     }
 
     public function get(string $property): mixed

@@ -106,16 +106,6 @@ final class MirrorClassTest extends MirrorObjectMethodsTest
 
         $this->assertInstanceOf(Object6::class, $object);
         $this->assertSame('foo', $object->prop);
-
-        $object = MirrorClass::for(Object6::class)->instantiateWith(fn(string $prop = 'closure') => new Object6($prop));
-
-        $this->assertInstanceOf(Object6::class, $object);
-        $this->assertSame('closure', $object->prop);
-
-        $object = MirrorClass::for(Object6::class)->instantiateWith(fn(string $prop = 'closure') => new Object6($prop), ['bar']);
-
-        $this->assertInstanceOf(Object6::class, $object);
-        $this->assertSame('bar', $object->prop);
     }
 
     /**
@@ -126,17 +116,6 @@ final class MirrorClassTest extends MirrorObjectMethodsTest
         $object = MirrorClass::for(Object6::class)->instantiateWith('factory', ['anotherProp' => 'foo']);
 
         $this->assertSame('factory', $object->prop);
-        $this->assertSame('foo', $object->anotherProp);
-    }
-
-    /**
-     * @test
-     */
-    public function instantiate_with_callback_using_named_arguments_skipping_some_parameters(): void
-    {
-        $object = MirrorClass::for(Object6::class)->instantiateWith(fn(string $prop = 'closure', ?string $anotherProp = null) => new Object6($prop, $anotherProp), ['anotherProp' => 'foo']);
-
-        $this->assertSame('closure', $object->prop);
         $this->assertSame('foo', $object->anotherProp);
     }
 
