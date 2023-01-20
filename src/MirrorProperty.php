@@ -12,6 +12,8 @@
 namespace Zenstruck;
 
 use Zenstruck\Mirror\AttributesMirror;
+use Zenstruck\Mirror\Exception\MirrorException;
+use Zenstruck\Mirror\Exception\PropertyTypeMismatch;
 use Zenstruck\Mirror\Internal\HasAttributes;
 use Zenstruck\Mirror\Internal\VisibilityMethods;
 
@@ -129,19 +131,35 @@ final class MirrorProperty implements AttributesMirror
 
     /**
      * @param T|null $object
+     *
+     * @throws MirrorException
      */
     public function get(?object $object = null): mixed
     {
-        return $this->reflector->getValue($object ?? $this->object);
+        try {
+            return $this->reflector->getValue($object ?? $this->object);
+        } catch (\ReflectionException $e) {
+            throw new MirrorException($e->getMessage(), $e);
+        }
     }
 
     /**
      * @param T|null $object
+     *
+     * @throws PropertyTypeMismatch If the value type is not supported by the property
+     * @throws MirrorException
      */
     public function set(mixed $value, ?object $object = null): void
     {
         $object ??= $this->object;
-        $object ? $this->reflector->setValue($object, $value) : $this->reflector->setValue($value);
+
+        try {
+            $object ? $this->reflector->setValue($object, $value) : $this->reflector->setValue($value);
+        } catch (\TypeError $e) {
+            throw new PropertyTypeMismatch($value, $this, $e);
+        } catch (\ReflectionException $e) {
+            throw new MirrorException($e->getMessage(), $e);
+        }
     }
 
     public function reflector(): \ReflectionProperty
@@ -154,10 +172,13 @@ final class MirrorProperty implements AttributesMirror
         return $this->reflector->hasDefaultValue();
     }
 
+    /**
+     * @throws MirrorException If no default exsists
+     */
     public function default(): mixed
     {
         if (!$this->hasDefault()) {
-            throw new \ReflectionException(); // todo
+            throw new MirrorException(\sprintf('Property "%s" does not have a default value.', $this));
         }
 
         return $this->reflector->getDefaultValue();

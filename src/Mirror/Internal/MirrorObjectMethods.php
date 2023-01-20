@@ -14,6 +14,12 @@ namespace Zenstruck\Mirror\Internal;
 use Zenstruck\Mirror\Argument;
 use Zenstruck\Mirror\ClassConstants;
 use Zenstruck\Mirror\Classes;
+use Zenstruck\Mirror\Exception\MirrorException;
+use Zenstruck\Mirror\Exception\NoSuchConstant;
+use Zenstruck\Mirror\Exception\NoSuchMethod;
+use Zenstruck\Mirror\Exception\NoSuchParameter;
+use Zenstruck\Mirror\Exception\NoSuchProperty;
+use Zenstruck\Mirror\Exception\PropertyTypeMismatch;
 use Zenstruck\Mirror\Methods;
 use Zenstruck\Mirror\Properties;
 use Zenstruck\Mirror\Traits;
@@ -79,13 +85,15 @@ trait MirrorObjectMethods
     {
         try {
             return $this->constantOrFail($name);
-        } catch (\ReflectionException) {
+        } catch (NoSuchConstant) {
             return null;
         }
     }
 
     /**
      * @return MirrorClassConstant<T>
+     *
+     * @throws NoSuchConstant
      */
     public function constantOrFail(string $name): MirrorClassConstant
     {
@@ -97,7 +105,7 @@ trait MirrorObjectMethods
             }
         }
 
-        throw new \ReflectionException(); // todo
+        throw new NoSuchConstant(\sprintf('Constant "%s" does not exist on "%s" or its parents.', $name, $this));
     }
 
     public function hasConstant(string $name): bool
@@ -123,13 +131,15 @@ trait MirrorObjectMethods
     {
         try {
             return $this->propertyOrFail($name);
-        } catch (\ReflectionException) {
+        } catch (NoSuchProperty) {
             return null;
         }
     }
 
     /**
      * @return MirrorProperty<T>
+     *
+     * @throws NoSuchProperty
      */
     public function propertyOrFail(string $name): MirrorProperty
     {
@@ -141,7 +151,7 @@ trait MirrorObjectMethods
             }
         }
 
-        throw new \ReflectionException(\sprintf('Property "%s" does not exist on "%s" or its parents.', $name, $this));
+        throw new NoSuchProperty(\sprintf('Property "%s" does not exist on "%s" or its parents.', $name, $this));
     }
 
     public function hasProperty(string $name): bool
@@ -167,17 +177,23 @@ trait MirrorObjectMethods
     {
         try {
             return $this->methodOrFail($name);
-        } catch (\ReflectionException) {
+        } catch (NoSuchMethod) {
             return null;
         }
     }
 
     /**
      * @return MirrorMethod<T>
+     *
+     * @throws NoSuchMethod
      */
     public function methodOrFail(string $name): MirrorMethod
     {
-        return new MirrorMethod($this->reflector->getMethod($name), $this->object ?? null); // @phpstan-ignore-line
+        try {
+            return new MirrorMethod($this->reflector->getMethod($name), $this->object ?? null); // @phpstan-ignore-line
+        } catch (\ReflectionException $e) {
+            throw new NoSuchMethod(\sprintf('Constant "%s" does not exist on "%s" or its parents.', $name, $this), $e);
+        }
     }
 
     public function hasMethod(string $name): bool
@@ -187,6 +203,9 @@ trait MirrorObjectMethods
 
     /**
      * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
+     *
+     * @throws NoSuchMethod
+     * @throws MirrorException
      */
     public function call(string $method, array|Argument $arguments = []): mixed
     {
@@ -248,6 +267,25 @@ trait MirrorObjectMethods
     public function file(): ?string
     {
         return $this->reflector->getFileName() ?: null;
+    }
+
+    /**
+     * @throws NoSuchParameter
+     * @throws MirrorException
+     */
+    public function get(string $property): mixed
+    {
+        return $this->propertyOrFail($property)->get();
+    }
+
+    /**
+     * @throws NoSuchParameter
+     * @throws PropertyTypeMismatch
+     * @throws MirrorException
+     */
+    public function set(string $property, mixed $value): void
+    {
+        $this->propertyOrFail($property)->set($value);
     }
 
     /**

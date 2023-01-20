@@ -12,6 +12,7 @@
 namespace Zenstruck;
 
 use Zenstruck\Mirror\AttributesMirror;
+use Zenstruck\Mirror\Exception\MirrorException;
 use Zenstruck\Mirror\Internal\HasAttributes;
 
 /**
@@ -65,10 +66,13 @@ final class MirrorParameter implements AttributesMirror
         return $this->reflector->isVariadic();
     }
 
+    /**
+     * @throws MirrorException If no default exsists
+     */
     public function default(): mixed
     {
         if (!$this->hasDefault()) {
-            throw new \ReflectionException(); // todo
+            throw new MirrorException(\sprintf('Parameter "%s" does not have a default value.', $this));
         }
 
         return $this->reflector->getDefaultValue();

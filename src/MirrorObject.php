@@ -89,16 +89,6 @@ final class MirrorObject implements AttributesMirror
         return MirrorClass::for($this->object()); // @phpstan-ignore-line
     }
 
-    public function get(string $property): mixed
-    {
-        return $this->propertyOrFail($property)->get();
-    }
-
-    public function set(string $property, mixed $value): void
-    {
-        $this->propertyOrFail($property)->set($value);
-    }
-
     public function isInitialized(string $property): bool
     {
         return $this->propertyOrFail($property)->isInitialized($this->object);

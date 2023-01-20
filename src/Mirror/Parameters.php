@@ -11,7 +11,9 @@
 
 namespace Zenstruck\Mirror;
 
+use Zenstruck\Mirror\Exception\NoSuchParameter;
 use Zenstruck\Mirror\Internal\AttributesMirrorIterator;
+use Zenstruck\MirrorCallable;
 use Zenstruck\MirrorParameter;
 
 /**
@@ -24,7 +26,7 @@ use Zenstruck\MirrorParameter;
  */
 final class Parameters extends AttributesMirrorIterator
 {
-    public function __construct(private \ReflectionFunctionAbstract $function)
+    public function __construct(private MirrorCallable $function)
     {
     }
 
@@ -39,9 +41,12 @@ final class Parameters extends AttributesMirrorIterator
         return null;
     }
 
+    /**
+     * @throws NoSuchParameter
+     */
     public function getOrFail(string|int $name): MirrorParameter
     {
-        return $this->get($name) ?? throw new \ReflectionException(); // todo
+        return $this->get($name) ?? throw new NoSuchParameter(\sprintf('Parameter "%s" does not exist for function "%s".', $name, $this->function));
     }
 
     public function required(): self
@@ -56,7 +61,7 @@ final class Parameters extends AttributesMirrorIterator
 
     protected function iterator(): \Traversable
     {
-        foreach ($this->function->getParameters() as $parameter) {
+        foreach ($this->function->reflector()->getParameters() as $parameter) {
             yield new MirrorParameter($parameter);
         }
     }

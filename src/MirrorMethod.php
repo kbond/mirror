@@ -12,6 +12,7 @@
 namespace Zenstruck;
 
 use Zenstruck\Mirror\Argument;
+use Zenstruck\Mirror\Exception\MirrorException;
 use Zenstruck\Mirror\Internal\VisibilityMethods;
 
 /**
@@ -75,7 +76,7 @@ final class MirrorMethod extends MirrorCallable
         $object ??= $this->object;
 
         if (!$object && $this->isInstance()) {
-            throw new \ReflectionException(); // todo
+            throw new MirrorException(\sprintf('Cannot call instance method "%s" without an object.', $this));
         }
 
         return $this->reflector->invokeArgs($object, $this->normalizeArguments($arguments));

@@ -13,6 +13,7 @@ namespace Zenstruck;
 
 use Zenstruck\Mirror\Argument;
 use Zenstruck\Mirror\AttributesMirror;
+use Zenstruck\Mirror\Exception\MirrorException;
 use Zenstruck\Mirror\Exception\UnresolveableArgument;
 use Zenstruck\Mirror\Internal\HasAttributes;
 use Zenstruck\Mirror\Parameters;
@@ -70,6 +71,8 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
 
     /**
      * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
+     *
+     * @throws MirrorException
      */
     abstract public function invoke(array|Argument $arguments = []): mixed;
 
@@ -85,7 +88,12 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
 
     public function parameters(): Parameters
     {
-        return new Parameters($this->reflector);
+        return new Parameters($this);
+    }
+
+    public function reflector(): \ReflectionFunctionAbstract
+    {
+        return $this->reflector;
     }
 
     public function count(): int

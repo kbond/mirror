@@ -13,6 +13,8 @@ namespace Zenstruck;
 
 use Zenstruck\Mirror\Argument;
 use Zenstruck\Mirror\AttributesMirror;
+use Zenstruck\Mirror\Exception\MirrorException;
+use Zenstruck\Mirror\Exception\NoSuchMethod;
 use Zenstruck\Mirror\Internal\MirrorObjectMethods;
 
 /**
@@ -58,14 +60,6 @@ final class MirrorClass implements AttributesMirror
     public function reflector(): \ReflectionClass
     {
         return $this->reflector;
-    }
-
-    /**
-     * @return MirrorMethod<T>|null
-     */
-    public function constructor(): ?MirrorMethod
-    {
-        return $this->reflector->getConstructor() ? new MirrorMethod($this->reflector->getConstructor()) : null; // @phpstan-ignore-line
     }
 
     public function isInterface(): bool
@@ -120,33 +114,15 @@ final class MirrorClass implements AttributesMirror
      * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
      *
      * @return T
+     *
+     * @throws NoSuchMethod
+     * @throws MirrorException
      */
     public function instantiateWith(string $method, array|Argument $arguments = []): object
     {
-        $object = $this->call($method, $arguments);
+        $method = $this->methodOrFail($method);
+        $object = $method->invoke($arguments);
 
-        return $object instanceof $this->reflector->name ? $object : throw new \ReflectionException(); // todo
-    }
-
-    public function get(string $property): mixed
-    {
-        $property = $this->propertyOrFail($property);
-
-        if (!$property->isStatic()) {
-            throw new \ReflectionException(); // todo
-        }
-
-        return $property->get();
-    }
-
-    public function set(string $property, mixed $value): void
-    {
-        $property = $this->propertyOrFail($property);
-
-        if (!$property->isStatic()) {
-            throw new \ReflectionException(); // todo
-        }
-
-        $property->set($value);
+        return $object instanceof $this->reflector->name ? $object : throw new MirrorException(\sprintf('Method "%s" must return an instance of "%s".', $method, $this));
     }
 }
