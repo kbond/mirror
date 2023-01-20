@@ -40,6 +40,18 @@ abstract class RecursiveClassIterator extends AttributesMirrorIterator
         return $clone;
     }
 
+    final public function all(bool $namesAsKeys = false): array
+    {
+        if (!$namesAsKeys || !$this->includeDuplicates) {
+            return parent::all($namesAsKeys);
+        }
+
+        $clone = clone $this;
+        $clone->includeDuplicates = false; // would have key conflicts
+
+        return $clone->all($namesAsKeys);
+    }
+
     /**
      * @return \Traversable<T>
      */

@@ -63,11 +63,22 @@ abstract class MirrorIterator implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return T[]
+     * @return array<array-key,T>
+     * @phpstan-return ($namesAsKeys is true ? array<string,T> : T[])
      */
-    final public function all(): array
+    public function all(bool $namesAsKeys = false): array
     {
-        return \iterator_to_array($this);
+        if (!$namesAsKeys) {
+            return \iterator_to_array($this);
+        }
+
+        $ret = [];
+
+        foreach ($this as $mirror) {
+            $ret[$mirror->name()] = $mirror;
+        }
+
+        return $ret;
     }
 
     /**
@@ -77,9 +88,9 @@ abstract class MirrorIterator implements \IteratorAggregate, \Countable
      *
      * @return V[]
      */
-    final public function map(callable $fn): array
+    final public function map(callable $fn, bool $namesAsKeys = false): array
     {
-        return \array_map($fn, $this->all());
+        return \array_map($fn, $this->all($namesAsKeys));
     }
 
     /**
