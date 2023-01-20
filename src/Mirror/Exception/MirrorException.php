@@ -14,6 +14,10 @@ namespace Zenstruck\Mirror\Exception;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-final class UnresolveableArgument extends MirrorException
+class MirrorException extends \ReflectionException
 {
+    public function __construct(string $message, ?\Throwable $previous = null)
+    {
+        parent::__construct($message, previous: $previous);
+    }
 }

@@ -50,6 +50,6 @@ final class UnionArgument extends Argument
             }
         }
 
-        throw new UnresolveableArgument('Unsupported union type.', previous: $e ?? null);
+        throw new UnresolveableArgument('Unsupported union type.', $e ?? null);
     }
 }

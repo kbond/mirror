@@ -127,7 +127,7 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
             try {
                 $arguments[$key] = $argument->resolve($parameters[$key]);
             } catch (UnresolveableArgument $e) {
-                throw new UnresolveableArgument(\sprintf('Unable to resolve argument for "%s" (%s).', $parameters[$key], $e->getMessage()), previous: $e);
+                throw new UnresolveableArgument(\sprintf('Unable to resolve argument for "%s" (%s).', $parameters[$key], $e->getMessage()), $e);
             }
         }
 

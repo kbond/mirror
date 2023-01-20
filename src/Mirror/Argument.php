@@ -96,7 +96,7 @@ abstract class Argument
                 return $parameter->default();
             }
 
-            throw new UnresolveableArgument(\sprintf('Parameter does not support "%s"', $this->type()), previous: $e);
+            throw new UnresolveableArgument(\sprintf('Parameter does not support "%s"', $this->type()), $e);
         }
 
         if ($value instanceof ValueFactory) {
