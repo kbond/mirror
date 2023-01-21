@@ -145,7 +145,7 @@ abstract class MirrorCallable implements AttributesMirror, \Countable
         }
 
         if (\count($arguments) < $this->reflector->getNumberOfRequiredParameters()) {
-            throw new \ArgumentCountError(\sprintf('Too few arguments to "%s". Expected at least %d but got %d.', $this, $this->reflector->getNumberOfRequiredParameters(), \count($arguments)));
+            throw new \ArgumentCountError(\sprintf('Too few arguments passed to "%s". Expected at least %d but got %d.', $this, $this->reflector->getNumberOfRequiredParameters(), \count($arguments)));
         }
 
         return $arguments;
