@@ -76,7 +76,7 @@ class Object1 implements Interface2
     {
     }
 
-    private static function staticMethod1($arg = 'foo'): string
+    private static function staticMethod1(string $arg = 'foo'): string
     {
         return $arg;
     }

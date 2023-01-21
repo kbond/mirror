@@ -11,6 +11,7 @@
 
 namespace Zenstruck\Tests;
 
+use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
 use Zenstruck\MirrorClass;
 use Zenstruck\Tests\Fixture\AbstractObject1;
 use Zenstruck\Tests\Fixture\Object1;
@@ -84,6 +85,16 @@ final class MirrorClassTest extends MirrorObjectMethodsTest
     /**
      * @test
      */
+    public function instantiate_with_constructor_type_error(): void
+    {
+        $this->expectException(ParameterTypeMismatch::class);
+
+        MirrorClass::for(Object6::class)->instantiate([['array']]);
+    }
+
+    /**
+     * @test
+     */
     public function instantiate_without_constructor(): void
     {
         $object = MirrorClass::for(Object6::class)->instantiateWithoutConstructor();
@@ -117,6 +128,16 @@ final class MirrorClassTest extends MirrorObjectMethodsTest
 
         $this->assertSame('factory', $object->prop);
         $this->assertSame('foo', $object->anotherProp);
+    }
+
+    /**
+     * @test
+     */
+    public function instantiate_with_method_type_error(): void
+    {
+        $this->expectException(ParameterTypeMismatch::class);
+
+        MirrorClass::for(Object6::class)->instantiateWith('factory', [['array']]);
     }
 
     /**

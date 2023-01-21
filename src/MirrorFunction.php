@@ -12,6 +12,7 @@
 namespace Zenstruck;
 
 use Zenstruck\Mirror\Argument;
+use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -50,7 +51,13 @@ final class MirrorFunction extends MirrorCallable
      */
     public function invoke(array|Argument $arguments = []): mixed
     {
-        return $this->reflector->invokeArgs($this->normalizeArguments($arguments));
+        $arguments = $this->normalizeArguments($arguments);
+
+        try {
+            return $this->reflector->invokeArgs($arguments);
+        } catch (\TypeError $e) {
+            throw ParameterTypeMismatch::for($e, $arguments, $this->parameters());
+        }
     }
 
     public function reflector(): \ReflectionFunction

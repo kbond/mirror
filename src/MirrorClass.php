@@ -15,6 +15,8 @@ use Zenstruck\Mirror\Argument;
 use Zenstruck\Mirror\AttributesMirror;
 use Zenstruck\Mirror\Exception\MirrorException;
 use Zenstruck\Mirror\Exception\NoSuchMethod;
+use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
+use Zenstruck\Mirror\Exception\UnresolveableArgument;
 use Zenstruck\Mirror\Internal\MirrorObjectMethods;
 
 /**
@@ -91,6 +93,9 @@ final class MirrorClass implements AttributesMirror
      * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
      *
      * @return T
+     *
+     * @throws UnresolveableArgument
+     * @throws ParameterTypeMismatch
      */
     public function instantiate(array|Argument $arguments = []): object
     {
@@ -98,7 +103,13 @@ final class MirrorClass implements AttributesMirror
             return $this->instantiateWithoutConstructor();
         }
 
-        return $this->reflector->newInstanceArgs($constructor->normalizeArguments($arguments));
+        $arguments = $constructor->normalizeArguments($arguments);
+
+        try {
+            return $this->reflector->newInstanceArgs($arguments);
+        } catch (\TypeError $e) {
+            throw ParameterTypeMismatch::for($e, $arguments, $constructor->parameters());
+        }
     }
 
     /**
@@ -116,6 +127,8 @@ final class MirrorClass implements AttributesMirror
      * @return T
      *
      * @throws NoSuchMethod
+     * @throws UnresolveableArgument
+     * @throws ParameterTypeMismatch
      * @throws MirrorException
      */
     public function instantiateWith(string $method, array|Argument $arguments = []): object

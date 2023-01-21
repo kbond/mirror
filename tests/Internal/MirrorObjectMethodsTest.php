@@ -12,6 +12,7 @@
 namespace Zenstruck\Tests\Internal;
 
 use PHPUnit\Framework\TestCase;
+use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
 use Zenstruck\MirrorClass;
 use Zenstruck\MirrorObject;
 use Zenstruck\Tests\Fixture\Attribute1;
@@ -83,6 +84,16 @@ abstract class MirrorObjectMethodsTest extends TestCase
 
         $this->assertSame('foo', $mirror->call('staticMethod1'));
         $this->assertSame('bar', $mirror->call('staticMethod1', ['bar']));
+    }
+
+    /**
+     * @test
+     */
+    public function call_static_method_invalid_type(): void
+    {
+        $this->expectException(ParameterTypeMismatch::class);
+
+        $this->createMirrorFor(new Object2())->call('staticMethod1', [['array']]);
     }
 
     /**

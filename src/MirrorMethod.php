@@ -13,6 +13,7 @@ namespace Zenstruck;
 
 use Zenstruck\Mirror\Argument;
 use Zenstruck\Mirror\Exception\ObjectInstanceRequired;
+use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
 use Zenstruck\Mirror\Internal\VisibilityMethods;
 
 /**
@@ -81,7 +82,13 @@ final class MirrorMethod extends MirrorCallable
             throw new ObjectInstanceRequired(\sprintf('Method "%s" is not static so an object instance is required to invoke.', $this));
         }
 
-        return $this->reflector->invokeArgs($object, $this->normalizeArguments($arguments));
+        $arguments = $this->normalizeArguments($arguments);
+
+        try {
+            return $this->reflector->invokeArgs($object, $arguments);
+        } catch (\TypeError $e) { // @phpstan-ignore-line
+            throw ParameterTypeMismatch::for($e, $arguments, $this->parameters());
+        }
     }
 
     public function reflector(): \ReflectionMethod

@@ -12,6 +12,7 @@
 namespace Zenstruck\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
 use Zenstruck\MirrorFunction;
 
 /**
@@ -50,6 +51,16 @@ final class MirrorFunctionTest extends TestCase
         $this->assertNull(MirrorFunction::for('strlen')->this());
         $this->assertNull(MirrorFunction::for(static fn() => null)->this());
         $this->assertSame($this, MirrorFunction::for(fn() => null)->this());
+    }
+
+    /**
+     * @test
+     */
+    public function invoke_type_error(): void
+    {
+        $this->expectException(ParameterTypeMismatch::class);
+
+        MirrorFunction::for('strlen')([['array']]);
     }
 }
 
