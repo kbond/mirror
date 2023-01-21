@@ -17,6 +17,8 @@ use Symfony\Component\VarExporter\ProxyHelper;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  *
+ * @experimental
+ *
  * @template T of object
  */
 abstract class ProxyBuilder

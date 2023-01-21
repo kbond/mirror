@@ -15,6 +15,8 @@ use Zenstruck\Mirror\ProxyBuilder;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
+ *
+ * @experimental
  */
 final class ProxyManager
 {

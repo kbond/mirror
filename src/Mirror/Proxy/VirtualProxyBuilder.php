@@ -19,6 +19,8 @@ use Zenstruck\MirrorCallable;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  *
+ * @experimental
+ *
  * @template T of object
  * @extends ProxyBuilder<T>
  */
