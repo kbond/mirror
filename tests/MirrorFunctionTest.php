@@ -12,6 +12,7 @@
 namespace Zenstruck\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Zenstruck\Mirror\Exception\NoSuchParameter;
 use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
 use Zenstruck\MirrorFunction;
 
@@ -61,6 +62,16 @@ final class MirrorFunctionTest extends TestCase
         $this->expectException(ParameterTypeMismatch::class);
 
         MirrorFunction::for('strlen')([['array']]);
+    }
+
+    /**
+     * @test
+     */
+    public function no_such_parameter(): void
+    {
+        $this->expectException(NoSuchParameter::class);
+
+        MirrorFunction::for('strlen')->parameters()->getOrFail('invalid');
     }
 }
 

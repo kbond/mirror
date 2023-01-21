@@ -155,6 +155,10 @@ final class MirrorProperty implements AttributesMirror
     {
         $object ??= $this->object;
 
+        if (!$object && $this->isInstance()) {
+            throw new ObjectInstanceRequired(\sprintf('Property "%s" is not static so an object instance is required to set.', $this));
+        }
+
         try {
             $object ? $this->reflector->setValue($object, $value) : $this->reflector->setValue($value);
 
@@ -162,13 +166,8 @@ final class MirrorProperty implements AttributesMirror
         } catch (\TypeError $e) {
             throw new PropertyTypeMismatch($value, $this, $e);
         } catch (\ReflectionException $e) {
+            throw new MirrorException($e->getMessage(), $e);
         }
-
-        if (!$object && $this->isInstance()) {
-            throw new ObjectInstanceRequired(\sprintf('Property "%s" is not static so an object instance is required to set.', $this));
-        }
-
-        throw new MirrorException($e->getMessage(), $e);
     }
 
     public function reflector(): \ReflectionProperty

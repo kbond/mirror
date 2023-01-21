@@ -12,7 +12,11 @@
 namespace Zenstruck\Tests\Internal;
 
 use PHPUnit\Framework\TestCase;
+use Zenstruck\Mirror\Exception\NoSuchConstant;
+use Zenstruck\Mirror\Exception\NoSuchMethod;
+use Zenstruck\Mirror\Exception\NoSuchProperty;
 use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
+use Zenstruck\Mirror\Exception\PropertyTypeMismatch;
 use Zenstruck\MirrorClass;
 use Zenstruck\MirrorObject;
 use Zenstruck\Tests\Fixture\Attribute1;
@@ -73,6 +77,16 @@ abstract class MirrorObjectMethodsTest extends TestCase
         $mirror->set('staticProp1', 'foo');
 
         $this->assertSame('foo', $mirror->get('staticProp1'));
+    }
+
+    /**
+     * @test
+     */
+    public function set_type_error(): void
+    {
+        $this->expectException(PropertyTypeMismatch::class);
+
+        $this->createMirrorFor(new Object2())->set('staticProp1', ['array']);
     }
 
     /**
@@ -413,6 +427,36 @@ abstract class MirrorObjectMethodsTest extends TestCase
         $this->assertCount(4, $attributes);
         $this->assertCount(2, $attributes->of(Attribute1::class));
         $this->assertCount(3, $attributes->of(Attribute1::class, instanceOf: true));
+    }
+
+    /**
+     * @test
+     */
+    public function no_such_constant(): void
+    {
+        $this->expectException(NoSuchConstant::class);
+
+        $this->createMirrorFor(new Object1())->constantOrFail('invalid');
+    }
+
+    /**
+     * @test
+     */
+    public function no_such_method(): void
+    {
+        $this->expectException(NoSuchMethod::class);
+
+        $this->createMirrorFor(new Object1())->methodOrFail('invalid');
+    }
+
+    /**
+     * @test
+     */
+    public function no_such_property(): void
+    {
+        $this->expectException(NoSuchProperty::class);
+
+        $this->createMirrorFor(new Object1())->propertyOrFail('invalid');
     }
 
     abstract protected function createMirrorFor(object $object): MirrorClass|MirrorObject;

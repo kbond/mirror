@@ -11,6 +11,7 @@
 
 namespace Zenstruck\Tests;
 
+use Zenstruck\Mirror\Exception\ObjectInstanceRequired;
 use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
 use Zenstruck\MirrorClass;
 use Zenstruck\Tests\Fixture\AbstractObject1;
@@ -164,6 +165,26 @@ final class MirrorClassTest extends MirrorObjectMethodsTest
         $mirror = MirrorClass::wrap(new \ReflectionClass(self::class));
 
         $this->assertSame($mirror, MirrorClass::wrap($mirror));
+    }
+
+    /**
+     * @test
+     */
+    public function call_instance_method_without_object(): void
+    {
+        $this->expectException(ObjectInstanceRequired::class);
+
+        MirrorClass::wrap(new \ReflectionClass(self::class))->call(__FUNCTION__);
+    }
+
+    /**
+     * @test
+     */
+    public function set_instance_property_without_object(): void
+    {
+        $this->expectException(ObjectInstanceRequired::class);
+
+        MirrorClass::for(Object1::class)->set('instanceProp10', 'foo');
     }
 
     protected function createMirrorFor(object $object): MirrorClass
