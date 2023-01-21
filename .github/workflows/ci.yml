@@ -11,13 +11,61 @@ jobs:
     uses: zenstruck/.github/.github/workflows/php-test.yml@main
 
   code-coverage:
-    uses: zenstruck/.github/.github/workflows/php-coverage-codecov.yml@main
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          coverage: xdebug
+          ini-values: xdebug.mode=coverage
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v2
+        with:
+          composer-options: --prefer-dist
+
+      - name: install symfony/var-exporter
+        run: composer require symfony/var-exporter
+
+      - name: Test with coverage
+        run: vendor/bin/phpunit -v --coverage-text --coverage-clover coverage.xml
+        shell: bash
+
+      - name: Publish coverage report to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+
 
   composer-validate:
     uses: zenstruck/.github/.github/workflows/php-composer-validate.yml@main
 
   sca:
-    uses: zenstruck/.github/.github/workflows/php-stan.yml@main
+    name: Static Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          coverage: none
+
+      - name: Install Dependencies
+        uses: ramsey/composer-install@v2
+
+      - name: install symfony/var-exporter
+        run: composer require symfony/var-exporter
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan --error-format=github
 
 #  fixcs:
 #    name: Run php-cs-fixer
