@@ -56,9 +56,9 @@ final class VirtualProxyBuilderTest extends TestCase
 
         eval($content);
 
-        $this->assertTrue(\class_exists(\Proxyaffe0c7fc6a33f37739421b849510cf6d7e81a6d::class));
+        $this->assertTrue(\class_exists(\Proxy921bd36c81ad2ecc4269d303ee901a54e205a6df::class));
 
-        $class = MirrorClass::for(\Proxyaffe0c7fc6a33f37739421b849510cf6d7e81a6d::class);
+        $class = MirrorClass::for(\Proxy921bd36c81ad2ecc4269d303ee901a54e205a6df::class);
         $this->assertTrue($class->isA(Object1::class));
         $this->assertTrue($class->isA(LazyObjectInterface::class));
         $this->assertTrue($class->isA(Interface1::class));
@@ -75,7 +75,7 @@ final class VirtualProxyBuilderTest extends TestCase
     {
         $builder = new VirtualProxyBuilder(Object1::class);
 
-        $this->assertFalse(\class_exists(\Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305::class));
+        $this->assertFalse(\class_exists(\Proxyaa41eb6b4c0a4741cf941a45ff53a8b2842b70fd::class));
         $this->assertFileDoesNotExist(self::DIR.'/Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305.php');
 
         $class = $builder
@@ -85,11 +85,11 @@ final class VirtualProxyBuilderTest extends TestCase
             ->class()
         ;
 
-        $this->assertTrue(\class_exists(\Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305::class));
-        $this->assertFileExists(self::DIR.'/Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305.php');
+        $this->assertTrue(\class_exists(\Proxyaa41eb6b4c0a4741cf941a45ff53a8b2842b70fd::class));
+        $this->assertFileExists(self::DIR.'/Proxyaa41eb6b4c0a4741cf941a45ff53a8b2842b70fd.php');
 
         $class = MirrorClass::for($class);
-        $this->assertSame(\Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305::class, $class->name());
+        $this->assertSame(\Proxyaa41eb6b4c0a4741cf941a45ff53a8b2842b70fd::class, $class->name());
         $this->assertTrue($class->isA(Object1::class));
         $this->assertTrue($class->isA(LazyObjectInterface::class));
         $this->assertTrue($class->isA(Interface1::class));

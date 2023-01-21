@@ -56,9 +56,9 @@ final class GhostProxyBuilderTest extends TestCase
 
         eval($content);
 
-        $this->assertTrue(\class_exists(\Proxyaffe0c7fc6a33f37739421b849510cf6d7e81a6d::class));
+        $this->assertTrue(\class_exists(\Proxy4f529fcd38225daf422b1fd264655c717b1a0abc::class));
 
-        $class = MirrorClass::for(\Proxyaffe0c7fc6a33f37739421b849510cf6d7e81a6d::class);
+        $class = MirrorClass::for(\Proxy4f529fcd38225daf422b1fd264655c717b1a0abc::class);
         $this->assertTrue($class->isA(Object1::class));
         $this->assertTrue($class->isA(LazyObjectInterface::class));
         $this->assertTrue($class->isA(Interface1::class));
@@ -75,8 +75,8 @@ final class GhostProxyBuilderTest extends TestCase
     {
         $builder = new GhostProxyBuilder(Object1::class);
 
-        $this->assertFalse(\class_exists(\Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305::class));
-        $this->assertFileDoesNotExist(self::DIR.'/Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305.php');
+        $this->assertFalse(\class_exists(\Proxy1234e6c38d17024dc06ee11e90bb590a9037b68b::class));
+        $this->assertFileDoesNotExist(self::DIR.'/Proxy1234e6c38d17024dc06ee11e90bb590a9037b68b.php');
 
         $class = $builder
             ->in(self::DIR)
@@ -85,11 +85,11 @@ final class GhostProxyBuilderTest extends TestCase
             ->class()
         ;
 
-        $this->assertTrue(\class_exists(\Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305::class));
-        $this->assertFileExists(self::DIR.'/Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305.php');
+        $this->assertTrue(\class_exists(\Proxy1234e6c38d17024dc06ee11e90bb590a9037b68b::class));
+        $this->assertFileExists(self::DIR.'/Proxy1234e6c38d17024dc06ee11e90bb590a9037b68b.php');
 
         $class = MirrorClass::for($class);
-        $this->assertSame(\Proxy0201528f7dd1b4cd1c57f5689c18c7cd5f4af305::class, $class->name());
+        $this->assertSame(\Proxy1234e6c38d17024dc06ee11e90bb590a9037b68b::class, $class->name());
         $this->assertTrue($class->isA(Object1::class));
         $this->assertTrue($class->isA(LazyObjectInterface::class));
         $this->assertTrue($class->isA(Interface1::class));
@@ -106,22 +106,22 @@ final class GhostProxyBuilderTest extends TestCase
     {
         $builder = new GhostProxyBuilder(Object1::class);
 
-        $this->assertFalse(\class_exists(\TestProxy1::class));
-        $this->assertFileDoesNotExist(self::DIR.'/TestProxy1.php');
+        $this->assertFalse(\class_exists(\TestProxy3::class));
+        $this->assertFileDoesNotExist(self::DIR.'/TestProxy3.php');
 
         $class = $builder
-            ->named('TestProxy1')
+            ->named('TestProxy3')
             ->in(self::DIR)
             ->implementing(Interface1::class, Interface2::class)
             ->using(Trait1::class, Trait2::class)
             ->class()
         ;
 
-        $this->assertTrue(\class_exists(\TestProxy1::class));
-        $this->assertFileExists(self::DIR.'/TestProxy1.php');
+        $this->assertTrue(\class_exists(\TestProxy3::class));
+        $this->assertFileExists(self::DIR.'/TestProxy3.php');
 
         $class = MirrorClass::for($class);
-        $this->assertSame(\TestProxy1::class, $class->name());
+        $this->assertSame(\TestProxy3::class, $class->name());
         $this->assertTrue($class->isA(Object1::class));
         $this->assertTrue($class->isA(LazyObjectInterface::class));
         $this->assertTrue($class->isA(Interface1::class));
@@ -138,11 +138,11 @@ final class GhostProxyBuilderTest extends TestCase
     {
         $builder = new GhostProxyBuilder(Object1::class);
 
-        $this->assertFalse(\class_exists(\TestProxy2::class));
-        $this->assertFileDoesNotExist(self::DIR.'/TestProxy2.php');
+        $this->assertFalse(\class_exists(\TestProxy4::class));
+        $this->assertFileDoesNotExist(self::DIR.'/TestProxy4.php');
 
         $mirror = $builder
-            ->named('TestProxy2')
+            ->named('TestProxy4')
             ->in(self::DIR)
             ->implementing(Interface1::class, Interface2::class)
             ->using(Trait1::class, Trait2::class)
@@ -151,12 +151,12 @@ final class GhostProxyBuilderTest extends TestCase
             })
         ;
 
-        $this->assertTrue(\class_exists(\TestProxy2::class));
-        $this->assertFileExists(self::DIR.'/TestProxy2.php');
+        $this->assertTrue(\class_exists(\TestProxy4::class));
+        $this->assertFileExists(self::DIR.'/TestProxy4.php');
         $this->assertSame('foo', $mirror->instanceProp1);
 
         $class = MirrorClass::for($mirror);
-        $this->assertSame(\TestProxy2::class, $class->name());
+        $this->assertSame(\TestProxy4::class, $class->name());
         $this->assertTrue($class->isA(Object1::class));
         $this->assertTrue($class->isA(LazyObjectInterface::class));
         $this->assertTrue($class->isA(Interface1::class));
