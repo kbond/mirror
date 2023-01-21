@@ -19,6 +19,7 @@ use Zenstruck\Mirror\Exception\NoSuchConstant;
 use Zenstruck\Mirror\Exception\NoSuchMethod;
 use Zenstruck\Mirror\Exception\NoSuchParameter;
 use Zenstruck\Mirror\Exception\NoSuchProperty;
+use Zenstruck\Mirror\Exception\ObjectInstanceRequired;
 use Zenstruck\Mirror\Exception\PropertyTypeMismatch;
 use Zenstruck\Mirror\Methods;
 use Zenstruck\Mirror\Properties;
@@ -205,6 +206,7 @@ trait MirrorObjectMethods
      * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
      *
      * @throws NoSuchMethod
+     * @throws ObjectInstanceRequired
      * @throws MirrorException
      */
     public function call(string $method, array|Argument $arguments = []): mixed
@@ -281,6 +283,7 @@ trait MirrorObjectMethods
     /**
      * @throws NoSuchParameter
      * @throws PropertyTypeMismatch
+     * @throws ObjectInstanceRequired
      * @throws MirrorException
      */
     public function set(string $property, mixed $value): void

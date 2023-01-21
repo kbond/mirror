@@ -12,7 +12,7 @@
 namespace Zenstruck;
 
 use Zenstruck\Mirror\Argument;
-use Zenstruck\Mirror\Exception\MirrorException;
+use Zenstruck\Mirror\Exception\ObjectInstanceRequired;
 use Zenstruck\Mirror\Internal\VisibilityMethods;
 
 /**
@@ -70,13 +70,15 @@ final class MirrorMethod extends MirrorCallable
     /**
      * @param mixed[]|array<string,mixed>|Argument[]|Argument $arguments
      * @param T|null                                          $object
+     *
+     * @throws ObjectInstanceRequired
      */
     public function invoke(array|Argument $arguments = [], ?object $object = null): mixed
     {
         $object ??= $this->object;
 
         if (!$object && $this->isInstance()) {
-            throw new MirrorException(\sprintf('Cannot call instance method "%s" without an object.', $this));
+            throw new ObjectInstanceRequired(\sprintf('Method "%s" is not static so an object instance is required to invoke.', $this));
         }
 
         return $this->reflector->invokeArgs($object, $this->normalizeArguments($arguments));
