@@ -154,7 +154,7 @@ final class InvokeWithArgumentTest extends TestCase
     public function invoke_with_too_few_arguments(): void
     {
         $this->expectException(\ArgumentCountError::class);
-        $this->expectExceptionMessage('Too few arguments to "(closure) ');
+        $this->expectExceptionMessage('Too few arguments passed to "(closure) ');
 
         MirrorFunction::for(fn(string $string, float $float, ?int $int = null) => 'ret')->invoke(['2']);
     }
