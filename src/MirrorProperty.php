@@ -15,6 +15,7 @@ use Zenstruck\Mirror\AttributesMirror;
 use Zenstruck\Mirror\Exception\MirrorException;
 use Zenstruck\Mirror\Exception\ObjectInstanceRequired;
 use Zenstruck\Mirror\Exception\PropertyTypeMismatch;
+use Zenstruck\Mirror\Exception\UninitializedProperty;
 use Zenstruck\Mirror\Internal\HasAttributes;
 use Zenstruck\Mirror\Internal\VisibilityMethods;
 
@@ -133,10 +134,16 @@ final class MirrorProperty implements AttributesMirror
     /**
      * @param T|null $object
      *
+     * @throws ObjectInstanceRequired If getting instance property without object
+     * @throws UninitializedProperty  If the property hasn't yet been initialized
      * @throws MirrorException
      */
     public function get(?object $object = null): mixed
     {
+        if (!$this->isInitialized($object)) {
+            throw new UninitializedProperty(\sprintf('Property "%s" is not yet initialized.', $this));
+        }
+
         try {
             return $this->reflector->getValue($object ?? $this->object);
         } catch (\ReflectionException $e) {
@@ -148,7 +155,7 @@ final class MirrorProperty implements AttributesMirror
      * @param T|null $object
      *
      * @throws PropertyTypeMismatch   If the value type is not supported by the property
-     * @throws ObjectInstanceRequired If setting instance method without object
+     * @throws ObjectInstanceRequired If setting instance property without object
      * @throws MirrorException
      */
     public function set(mixed $value, ?object $object = null): void
@@ -194,9 +201,17 @@ final class MirrorProperty implements AttributesMirror
 
     /**
      * @param T|null $object
+     *
+     * @throws ObjectInstanceRequired If checking instance property without object
      */
     public function isInitialized(?object $object = null): bool
     {
-        return $this->reflector->isInitialized($object);
+        $object ??= $this->object;
+
+        if (!$object && $this->isInstance()) {
+            throw new ObjectInstanceRequired(\sprintf('Property "%s" is not static so an object instance is required to access.', $this));
+        }
+
+        return $this->reflector->isInitialized($object ?? $this->object);
     }
 }

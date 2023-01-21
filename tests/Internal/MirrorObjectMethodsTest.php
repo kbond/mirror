@@ -17,6 +17,7 @@ use Zenstruck\Mirror\Exception\NoSuchMethod;
 use Zenstruck\Mirror\Exception\NoSuchProperty;
 use Zenstruck\Mirror\Exception\ParameterTypeMismatch;
 use Zenstruck\Mirror\Exception\PropertyTypeMismatch;
+use Zenstruck\Mirror\Exception\UninitializedProperty;
 use Zenstruck\MirrorClass;
 use Zenstruck\MirrorObject;
 use Zenstruck\Tests\Fixture\Attribute1;
@@ -457,6 +458,18 @@ abstract class MirrorObjectMethodsTest extends TestCase
         $this->expectException(NoSuchProperty::class);
 
         $this->createMirrorFor(new Object1())->propertyOrFail('invalid');
+    }
+
+    /**
+     * @test
+     */
+    public function get_uninitialized_property(): void
+    {
+        $this->expectException(UninitializedProperty::class);
+
+        $this->createMirrorFor(new class() {
+            private static string $staticProp1;
+        })->get('staticProp1');
     }
 
     abstract protected function createMirrorFor(object $object): MirrorClass|MirrorObject;

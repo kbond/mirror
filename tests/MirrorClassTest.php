@@ -187,6 +187,16 @@ final class MirrorClassTest extends MirrorObjectMethodsTest
         MirrorClass::for(Object1::class)->set('instanceProp10', 'foo');
     }
 
+    /**
+     * @test
+     */
+    public function get_instance_property_without_object(): void
+    {
+        $this->expectException(ObjectInstanceRequired::class);
+
+        MirrorClass::for(Object1::class)->get('instanceProp10');
+    }
+
     protected function createMirrorFor(object $object): MirrorClass
     {
         return MirrorClass::for($object);

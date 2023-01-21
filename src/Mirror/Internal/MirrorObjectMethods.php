@@ -21,6 +21,7 @@ use Zenstruck\Mirror\Exception\NoSuchParameter;
 use Zenstruck\Mirror\Exception\NoSuchProperty;
 use Zenstruck\Mirror\Exception\ObjectInstanceRequired;
 use Zenstruck\Mirror\Exception\PropertyTypeMismatch;
+use Zenstruck\Mirror\Exception\UninitializedProperty;
 use Zenstruck\Mirror\Methods;
 use Zenstruck\Mirror\Properties;
 use Zenstruck\Mirror\Traits;
@@ -273,6 +274,8 @@ trait MirrorObjectMethods
 
     /**
      * @throws NoSuchParameter
+     * @throws ObjectInstanceRequired
+     * @throws UninitializedProperty
      * @throws MirrorException
      */
     public function get(string $property): mixed
