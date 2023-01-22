@@ -30,7 +30,7 @@ abstract class ClassReflectorIterator extends RecursiveClassIterator
     /**
      * @return $this<T>
      */
-    final public function public(): self
+    final public function public(): static
     {
         $clone = clone $this;
         $clone->flags |= static::PUBLIC;
@@ -41,7 +41,7 @@ abstract class ClassReflectorIterator extends RecursiveClassIterator
     /**
      * @return $this<T>
      */
-    final public function protected(): self
+    final public function protected(): static
     {
         $clone = clone $this;
         $clone->flags |= static::PROTECTED;
@@ -52,7 +52,7 @@ abstract class ClassReflectorIterator extends RecursiveClassIterator
     /**
      * @return $this<T>
      */
-    final public function private(): self
+    final public function private(): static
     {
         $clone = clone $this;
         $clone->flags |= static::PRIVATE;
