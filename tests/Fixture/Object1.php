@@ -36,15 +36,6 @@ class Object1 implements Interface2
     #[Attribute2('second')]
     private const CONST10 = null;
 
-    #[Attribute2('first')]
-    #[Attribute1('second')]
-    #[Attribute1('third')]
-    #[Attribute3('fourth')]
-    public string $instanceProp1;
-
-    #[Attribute2('first')]
-    protected string $instanceProp2;
-
     private static string $staticProp1;
     private string $instanceProp3;
 
@@ -65,15 +56,6 @@ class Object1 implements Interface2
         #[Attribute2('first')]
         string $param2 = '',
     ) {
-    }
-
-    #[Attribute2('first')]
-    public function instanceMethod1(): void
-    {
-    }
-
-    protected function instanceMethod2(): void
-    {
     }
 
     private static function staticMethod1(string $arg = 'foo'): string

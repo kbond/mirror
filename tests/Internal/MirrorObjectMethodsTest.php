@@ -150,11 +150,11 @@ abstract class MirrorObjectMethodsTest extends TestCase
             'instanceMethod1',
             'instanceMethod2',
             '__construct',
-            'instanceMethod1',
-            'instanceMethod2',
             'staticMethod1',
             'instanceMethod3',
             'instanceMethod10',
+            'instanceMethod1',
+            'instanceMethod2',
         ], $methods->recursive(includeDuplicates: true)->names());
 
         $this->assertSame([
@@ -223,11 +223,11 @@ abstract class MirrorObjectMethodsTest extends TestCase
             'instanceProp3',
             'instanceProp1',
             'instanceProp2',
-            'instanceProp1',
-            'instanceProp2',
             'staticProp1',
             'instanceProp3',
             'instanceProp10',
+            'instanceProp1',
+            'instanceProp2',
         ], $properties->recursive(includeDuplicates: true)->names());
 
         $this->assertSame([
