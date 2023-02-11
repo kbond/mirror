@@ -445,17 +445,141 @@ $constant->name(); // string - name of constant
 
 `Zenstruck\Mirror\ClassConstants`, a collection of `MirrorClassConstant`'s.
 
+```php
+use Zenstruck\MirrorClass;
+use Zenstruck\Mirror\ClassConstants;
+use Zenstruck\MirrorClassConstant;
+
+/** @var MirrorClass $class */
+
+$constants = $class->constants(); // ClassConstants|MirrorClassConstant[]
+
+foreach ($constants as $constant) {
+    /** @var MirrorClassConstant $constant */
+}
+
+\count($constants); // int
+$constants->all(); // MirrorClassConstant[]
+$constants->first(); // ?MirrorClassConstant (first in collection)
+$constants->names(); // string[] (constant names in collection)
+
+$constants = $constants->public(); // ClassConstants|MirrorClassConstant[] include only public constants
+$constants = $constants->protected(); // ClassConstants|MirrorClassConstant[] include only protected constants
+$constants = $constants->private(); // ClassConstants|MirrorClassConstant[] include only private constants
+$constants = $constants->final(); // ClassConstants|MirrorClassConstant[] include only final constants
+$constants = $constants->extendable(); // ClassConstants|MirrorClassConstant[] include only non-final constants
+
+// include only constants with this attribute
+$constants = $constants->withAttribute(SomeAttribute::class); // ClassConstants|MirrorClassConstant[]
+
+// include only constants with an instance of this attribute
+$constants = $constants->withAttribute(SomeAttribute::class, instanceOf: true); // ClassConstants|MirrorClassConstant[]
+
+// recursively include constants from parent classes (duplicates excluded)
+$constants = $constants->recursive(); // ClassConstants|MirrorClassConstant[]
+
+// recursively include constants from parent classes (duplicates included)
+$constants = $constants->recursive(includeDuplicates: true); // ClassConstants|MirrorClassConstant[]
+
+// custom filter
+$constants = $constants->filter(fn(MirrorClassConstant $c) => bool); // ClassConstants|MirrorClassConstant[]
+
+// custom map
+$constants->map(fn(MirrorClassConstant $c) => $c->something()); // array
+
+// advanced filter
+$constants = $constants
+    ->public()
+    ->protected()
+    ->final() // ClassConstants|MirrorClassConstant[] final/non-private constants
+;
+```
+
 ### `MirrorFunction`
 
 Wraps a `\ReflectionFunction`.
+
+```php
+use Zenstruck\MirrorFunction;
+
+$function = MirrorFunction::wrap($reflectionFunction);
+$function = MirrorFunction::for($callable);
+
+$function->invoke([$arg1, $arg2, ...]); // mixed
+
+$function->parameters(); // Parameters|MirrorParameter[]
+\count($function); // int # of parameters
+$function->attributes(); // Attributes|MirrorAttributes[]
+$function->comment(); // string|null docblock
+$function->reflector(); // \ReflectionFunction
+$function->name(); // string - name of function
+$function->returnType(); // MirrorType
+```
 
 ### `MirrorParameter`
 
 Wraps a `\ReflectionParameter`.
 
+```php
+use Zenstruck\MirrorParameter;
+
+$parameter = MirrorParameter::wrap($reflectionProperty);
+$parameter = MirrorParameter::for($callable, $nameOrIndex);
+
+$parameter->attributes(); // Attributes|MirrorAttributes[]
+$parameter->reflector(); // \MirrorParameter
+$parameter->name(); // string - name of parameter
+$parameter->hasDefault(); // bool
+$parameter->default(); // mixed
+$parameter->type(); // MirrorType
+$parameter->hasType(); // bool
+$parameter->supports('string'); // bool
+$parameter->supports(SomeClass::class); // bool
+$parameter->accepts($someValue); // bool
+```
+
 #### `Parameters`
 
 `Zenstruck\Mirror\Parameters`, a collection of `MirrorParameter`'s.
+
+```php
+use Zenstruck\MirrorParameter;
+use Zenstruck\Mirror\Parameters;
+use Zenstruck\MirrorFunction;
+
+/** @var MirrorFunction $function */
+
+$parameters = $function->parameters(); // Parameters|MirrorParameter[]
+
+$parameters->get('name'); // ?MirrorParameter by this name
+$parameters->get(0); // ?MirrorParameter by this index
+$parameters->getOrFail('name'); // MirrorParameter or throws NoSuchParameter
+$parameters->getOrFail(0); // MirrorParameter or throws NoSuchParameter
+
+foreach ($parameters as $parameter) {
+    /** @var MirrorParameter $parameter */
+}
+
+\count($parameters); // int
+$parameters->all(); // MirrorParameter[]
+$parameters->first(); // ?MirrorParameter (first in collection)
+$parameters->names(); // string[] (parameter names in collection)
+
+$parameters = $parameters->required(); // Parameters|MirrorParameter[] include only required parameters
+$parameters = $parameters->optional(); // Parameters|MirrorParameter[] include only protected constants
+
+// include only parameters with this attribute
+$parameters = $parameters->withAttribute(SomeAttribute::class); // Parameters|MirrorParameter[]
+
+// include only parameters with an instance of this attribute
+$parameters = $parameters->withAttribute(SomeAttribute::class, instanceOf: true); // Parameters|MirrorParameter[]
+
+// custom filter
+$parameters = $parameters->filter(fn(MirrorParameter $p) => bool); // Parameters|MirrorParameter[]
+
+// custom map
+$constants->map(fn(MirrorParameter $p) => $p->something()); // array
+```
 
 ### `MirrorType`
 
